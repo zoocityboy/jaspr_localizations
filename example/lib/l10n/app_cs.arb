@@ -1,0 +1,169 @@
+{
+  "@@locale": "cs",
+  "@@context": "Application localization for Jaspr framework example",
+  "@@author": "Jaspr Localization Team",
+  "@@comment": "Czech translations for the Jaspr localization example application",
+  
+  "appTitle": "Moje aplikace",
+  "@appTitle": {
+    "description": "The title of the application displayed in the header",
+    "context": "ui:header"
+  },
+  
+  "welcomeMessage": "Vítejte v aplikaci {appName}!",
+  "@welcomeMessage": {
+    "description": "Welcome message shown to users when they open the application",
+    "context": "ui:greeting",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "My App",
+        "description": "The name of the application"
+      }
+    }
+  },
+  
+  "itemCount": "{count, plural, =0{Žádné položky} =1{Jedna položka} few{{count} položky} other{{count} položek}}",
+  "@itemCount": {
+    "description": "Shows the number of items with proper plural support",
+    "context": "ui:status",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5",
+        "description": "The number of items to display"
+      }
+    }
+  },
+  
+  "loginButton": "Přihlásit se",
+  "@loginButton": {
+    "description": "Text for the login button",
+    "context": "ui:button:auth"
+  },
+  
+  "logoutButton": "Odhlásit se", 
+  "@logoutButton": {
+    "description": "Text for the logout button",
+    "context": "ui:button:auth"
+  },
+  
+  "currentLocale": "Aktuální lokalita: {locale}",
+  "@currentLocale": {
+    "description": "Displays the current locale setting",
+    "context": "ui:settings",
+    "placeholders": {
+      "locale": {
+        "type": "String",
+        "example": "cs-CZ",
+        "description": "The current locale code"
+      }
+    }
+  },
+  
+  "genderMessage": "{gender, select, male{Má rád Flutter} female{Má ráda Flutter} other{Mají rádi Flutter}}",
+  "@genderMessage": {
+    "description": "Gender-specific message demonstrating ICU select format",
+    "context": "example:icu",
+    "placeholders": {
+      "gender": {
+        "type": "String",
+        "example": "male",
+        "description": "The gender selection for the message"
+      }
+    }
+  },
+  
+  "priceDisplay": "Cena: {amount}",
+  "@priceDisplay": {
+    "description": "Display price with currency formatting",
+    "context": "ui:commerce",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "example": "123,45 Kč",
+        "format": "currency",
+        "description": "The formatted price amount to display"
+      }
+    }
+  },
+  
+  "downloadCount": "Stažení: {count}",
+  "@downloadCount": {
+    "description": "Display download count with number formatting",
+    "context": "ui:stats",
+    "placeholders": {
+      "count": {
+        "type": "String", 
+        "example": "1 234",
+        "description": "The formatted number of downloads"
+      }
+    }
+  },
+  
+  "percentageValue": "Průběh: {value}%",
+  "@percentageValue": {
+    "description": "Display percentage value with proper formatting",
+    "context": "ui:progress",
+    "placeholders": {
+      "value": {
+        "type": "num",
+        "example": "75",
+        "description": "The percentage value as a formatted string"
+      }
+    }
+  },
+  
+  "salesReport": "Prodeje: {amount} ({count} kusů) - růst {percent}%",
+  "@salesReport": {
+    "description": "Complex sales report with multiple formatting types",
+    "context": "ui:reporting",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "example": "15 000,50 Kč",
+        "format": "simpleCurrency",
+        "description": "The formatted total sales amount"
+      },
+      "count": {
+        "type": "num",
+        "example": "2 500",
+        "format": "simpleCurrency",
+        "description": "The formatted number of units sold"
+      },
+      "percent": {
+        "type": "num",
+        "example": "15",
+        "description": "The formatted growth percentage"
+      }
+    }
+  },
+  
+  "lastUpdated": "Naposledy aktualizováno: {date}",
+  "@lastUpdated": {
+    "description": "Shows when the data was last updated",
+    "context": "ui:timestamp",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd",
+        "example": "15. 10. 2023",
+        "description": "The formatted last update date"
+      }
+    }
+  },
+  
+  "timeRemaining": "Zbývající čas: {time}",
+  "@timeRemaining": {
+    "description": "Display remaining time in hours and minutes",
+    "context": "ui:timer",
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "Hm",
+        "example": "14:30",
+        "description": "Time remaining"
+      }
+    }
+  }
+}

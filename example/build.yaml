@@ -1,0 +1,5 @@
+targets:
+  $default:
+    builders:
+      jaspr_localizations:jaspr_localizations:
+        enabled: true

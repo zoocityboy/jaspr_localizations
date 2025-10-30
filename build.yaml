@@ -1,0 +1,11 @@
+builders:
+  jaspr_localizations:
+    import: "package:jaspr_localizations/builder.dart"
+    builder_factories: ["jasprLocalizationsBuilder"]
+    build_extensions: 
+      "$lib$":
+        - "generated/app_localizations.dart"
+    auto_apply: all_packages
+    build_to: source
+    runs_before: []
+    applies_builders: []

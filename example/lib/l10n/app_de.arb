@@ -1,0 +1,169 @@
+{
+  "@@locale": "de",
+  "@@context": "Anwendungslokalisierung für Jaspr Framework Beispiel",
+  "@@author": "Jaspr Localization Team",
+  "@@comment": "Deutsche Übersetzungen für die Jaspr Lokalisierungs-Beispielanwendung",
+  
+  "appTitle": "Meine Anwendung",
+  "@appTitle": {
+    "description": "Der Titel der Anwendung, der im Header angezeigt wird",
+    "context": "ui:header"
+  },
+  
+  "welcomeMessage": "Willkommen bei {appName}!",
+  "@welcomeMessage": {
+    "description": "Willkommensnachricht für Benutzer beim Öffnen der Anwendung",
+    "context": "ui:greeting",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "Meine App",
+        "description": "Der Name der Anwendung"
+      }
+    }
+  },
+  
+  "itemCount": "{count, plural, =0{Keine Elemente} =1{Ein Element} other{{count} Elemente}}",
+  "@itemCount": {
+    "description": "Zeigt die Anzahl der Elemente mit korrekter Pluralunterstützung",
+    "context": "ui:status",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5",
+        "description": "Die Anzahl der anzuzeigenden Elemente"
+      }
+    }
+  },
+  
+  "loginButton": "Anmelden",
+  "@loginButton": {
+    "description": "Text für die Anmelde-Schaltfläche",
+    "context": "ui:button:auth"
+  },
+  
+  "logoutButton": "Abmelden",
+  "@logoutButton": {
+    "description": "Text für die Abmelde-Schaltfläche",
+    "context": "ui:button:auth"
+  },
+  
+  "currentLocale": "Aktuelle Sprache: {locale}",
+  "@currentLocale": {
+    "description": "Zeigt die aktuelle Spracheinstellung an",
+    "context": "ui:settings",
+    "placeholders": {
+      "locale": {
+        "type": "String",
+        "example": "de-DE",
+        "description": "Der aktuelle Sprachcode"
+      }
+    }
+  },
+  
+  "genderMessage": "{gender, select, male{Er mag Flutter} female{Sie mag Flutter} other{Sie mögen Flutter}}",
+  "@genderMessage": {
+    "description": "Geschlechtsspezifische Nachricht zur Demonstration des ICU-Select-Formats",
+    "context": "example:icu",
+    "placeholders": {
+      "gender": {
+        "type": "String",
+        "example": "male",
+        "description": "Die Geschlechtsauswahl für die Nachricht"
+      }
+    }
+  },
+  
+  "priceDisplay": "Preis: {amount}",
+  "@priceDisplay": {
+    "description": "Preis mit korrekter Währungsformatierung anzeigen",
+    "context": "ui:commerce",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "example": "123.45",
+        "format": "currency",
+        "description": "Der formatierte anzuzeigende Preisbetrag"
+      }
+    }
+  },
+  
+  "downloadCount": "Downloads: {count}",
+  "@downloadCount": {
+    "description": "Download-Anzahl mit kompakter Zahlenformatierung anzeigen",
+    "context": "ui:stats",
+    "placeholders": {
+      "count": {
+        "type": "String",
+        "example": "1.234",
+        "description": "Die formatierte Anzahl der Downloads"
+      }
+    }
+  },
+  
+  "percentageValue": "Fortschritt: {value}%",
+  "@percentageValue": {
+    "description": "Prozentwert mit ordnungsgemäßer Formatierung anzeigen",
+    "context": "ui:progress",
+    "placeholders": {
+      "value": {
+        "type": "num",
+        "example": "75",
+        "description": "Der formatierte Prozentwert"
+      }
+    }
+  },
+  
+  "salesReport": "Verkäufe: {amount} ({count} Einheiten) - {percent}% Wachstum",
+  "@salesReport": {
+    "description": "Komplexer Verkaufsbericht mit mehreren Formatierungstypen",
+    "context": "ui:reporting",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "example": "15000.50",
+        "format": "simpleCurrency",
+        "description": "Der formatierte Gesamtumsatz"
+      },
+      "count": {
+        "type": "num",
+        "example": "2500",
+        "format": "simpleCurrency",
+        "description": "Die formatierte Anzahl der verkauften Einheiten"
+      },
+      "percent": {
+        "type": "num",
+        "example": "15",
+        "description": "Das formatierte Wachstumsprozent"
+      }
+    }
+  },
+  
+  "lastUpdated": "Zuletzt aktualisiert: {date}",
+  "@lastUpdated": {
+    "description": "Zeigt an, wann die Daten zuletzt aktualisiert wurden",
+    "context": "ui:timestamp",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd",
+        "example": "2023-10-15",
+        "description": "Das formatierte letzte Aktualisierungsdatum"
+      }
+    }
+  },
+  
+  "timeRemaining": "Verbleibende Zeit: {time}",
+  "@timeRemaining": {
+    "description": "Verbleibende Zeit in Stunden und Minuten anzeigen",
+    "context": "ui:timer",
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "Hm",
+        "example": "2023-10-15T14:30:00Z",
+        "description": "Verbleibende Zeit"
+      }
+    }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "@@locale": "zh",
+  "@@context": "Jaspr框架示例的应用程序本地化",
+  "@@author": "Jaspr Localization Team",
+  "@@comment": "Jaspr本地化示例应用程序的中文翻译（基本版本）",
+  
+  "appTitle": "我的应用程序",
+  "@appTitle": {
+    "description": "显示在标题栏中的应用程序标题",
+    "context": "ui:header"
+  },
+  
+  "welcomeMessage": "欢迎使用 {appName}！",
+  "@welcomeMessage": {
+    "description": "向用户显示的欢迎信息",
+    "context": "ui:welcome",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "Jaspr"
+      }
+    }
+  },
+  
+  "itemCount": "{count, plural, =0{没有项目} other{{count}个项目}}",
+  "@itemCount": {
+    "description": "显示项目数量",
+    "context": "ui:counter",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  
+  "loginButton": "登录",
+  "@loginButton": {
+    "description": "登录按钮文本",
+    "context": "ui:authentication"
+  },
+  
+  "logoutButton": "退出",
+  "@logoutButton": {
+    "description": "退出按钮文本",
+    "context": "ui:authentication"
+  },
+  
+  "currentLocale": "当前语言: {locale}",
+  "@currentLocale": {
+    "description": "显示当前选择的语言",
+    "context": "ui:settings",
+    "placeholders": {
+      "locale": {
+        "type": "String",
+        "example": "zh"
+      }
+    }
+  },
+  
+  "genderMessage": "{gender, select, male{他喜欢Flutter} female{她喜欢Flutter} other{他们喜欢Flutter}}",
+  "@genderMessage": {
+    "description": "根据性别显示不同的消息",
+    "context": "ui:dynamic_content",
+    "placeholders": {
+      "gender": {
+        "type": "String",
+        "example": "male"
+      }
+    }
+  },
+  
+  "priceDisplay": "价格: {amount}",
+  "@priceDisplay": {
+    "description": "显示价格",
+    "context": "ui:shopping",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "currency",
+        "example": "123.45"
+      }
+    }
+  },
+  
+  "downloadCount": "下载次数: {count}",
+  "@downloadCount": {
+    "description": "显示下载次数",
+    "context": "ui:statistics",
+    "placeholders": {
+      "count": {
+        "type": "String",
+        "example": "1,234"
+      }
+    }
+  },
+  
+  "percentageValue": "进度: {value}%",
+  "@percentageValue": {
+    "description": "显示百分比值",
+    "context": "ui:progress",
+    "placeholders": {
+      "value": {
+        "type": "num",
+        "example": "75"
+      }
+    }
+  },
+  
+  "salesReport": "销售额: {amount} ({count}个单位) - {percent}%增长",
+  "@salesReport": {
+    "description": "显示销售报告",
+    "context": "ui:business_analytics",
+    "placeholders": {
+      "amount": {
+        "type": "num",
+        "format": "simpleCurrency",
+        "example": "15000.50"
+      },
+      "count": {
+        "type": "num",
+        "format": "simpleCurrency",
+        "example": "2500"
+      },
+      "percent": {
+        "type": "num",
+        "example": "15"
+      }
+    }
+  },
+  
+  "lastUpdated": "最后更新: {date}",
+  "@lastUpdated": {
+    "description": "显示最后更新时间",
+    "context": "ui:status",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMd",
+        "example": "2024-01-15"
+      }
+    }
+  },
+  
+  "timeRemaining": "剩余时间: {time}",
+  "@timeRemaining": {
+    "description": "显示剩余时间",
+    "context": "ui:countdown",
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "Hm",
+        "example": "14:30"
+      }
+    }
+  }
+}
