@@ -1,19 +1,40 @@
 # Jaspr Localizations
 
-A comprehensive localization package for Jaspr applications with ARB file support and code generation.
+[![Pub Version](https://img.shields.io/pub/v/jaspr_localizations?style=flat-square)](https://pub.dev/packages/jaspr_localizations)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+[![Dart](https://img.shields.io/badge/Dart-3.9+-blue?style=flat-square&logo=dart)](https://dart.dev)
+[![Jaspr](https://img.shields.io/badge/Jaspr-0.21+-orange?style=flat-square)](https://docs.page/schultek/jaspr)
+
+Internationalization and localization support for Jaspr applications with ARB file generation and Flutter-like APIs.
+
+> [!NOTE]
+> Jaspr Localizations brings Flutter's proven localization patterns to Jaspr web applications, making it easy to build multilingual web experiences.
+
+## Overview
+
+Jaspr Localizations provides a comprehensive solution for internationalizing Jaspr applications. It combines the power of ARB (Application Resource Bundle) files with automatic code generation to deliver type-safe, efficient localization that follows Flutter's established patterns.
+
+The package leverages Jaspr's InheritedComponent pattern for optimal performance and provides a familiar API for developers coming from Flutter while being perfectly optimized for web applications.
 
 ## Features
 
-- 🌍 **Locale Object**: Uses a dedicated `Locale` class instead of strings for better type safety
-- 🔄 **InheritedComponent Pattern**: Uses Jaspr's InheritedComponent for efficient updates
-- ✅ **Type-Safe**: Access locale information with compile-time safety
-- 🎯 **Lightweight**: Minimal dependencies and overhead
-- 🌐 **Supported Locales**: Track multiple supported locales in your application
-- 📝 **ARB File Support**: Industry-standard format for localization (same as Flutter)
-- 🔨 **Code Generation**: Automatic generation of type-safe localization classes from ARB files
-- 🚀 **Easy Integration**: Similar to flutter_localizations configuration
+- **Type-Safe Localization**: Compile-time safety with generated Dart classes
+- **ARB File Support**: Industry-standard format compatible with Flutter tooling
+- **Automatic Code Generation**: Build-time generation of localization classes
+- **InheritedComponent Pattern**: Efficient state management using Jaspr's architecture
+- **ICU MessageFormat**: Support for plurals, selects, and complex formatting
+- **Locale Management**: Comprehensive locale switching and validation
+- **Performance Optimized**: Minimal runtime overhead and efficient updates
+- **Flutter-Compatible**: Easy migration path for Flutter developers
 
 ## Getting started
+
+### Prerequisites
+
+- Dart SDK 3.9.0 or later
+- Jaspr 0.21.6 or later
+
+### Installation
 
 Add `jaspr_localizations` to your `pubspec.yaml`:
 
@@ -25,210 +46,91 @@ dev_dependencies:
   build_runner: ^2.4.0
 ```
 
-## Usage
+### Quick Setup
 
-### Basic Setup (Flutter-like API)
-
-Wrap your app with `LocaleProvider` and provide localization delegates:
-
-```dart
-import 'package:jaspr/jaspr.dart';
-import 'package:jaspr_localizations/jaspr_localizations.dart';
-import 'generated/app_localizations.g.dart';
-
-class MyApp extends StatelessComponent {
-  @override
-  Component build(BuildContext context) {
-    return LocaleProvider(
-      locale: const Locale('en', 'US'),
-      delegates: const [AppLocalizationsDelegate()],
-      child: HomePage(),
-    );
-  }
-}
-```
-
-The delegates automatically provide supported locales - no need to manually specify them!
-
-### Access Localizations Using BuildContext
-
-In your components, access localizations using the Flutter-like `of(BuildContext)` pattern:
-
-```dart
-class HomePage extends StatelessComponent {
-  @override
-  Component build(BuildContext context) {
-    // Get localized strings using BuildContext (recommended)
-    final l10n = AppLocalizations.of(context);
-    
-    return div([
-      h1([text(l10n.appTitle)]),
-      p([text(l10n.welcomeMessage('Jaspr'))]),
-    ]);
-  }
-}
-```
-
-### Alternative: Direct Locale Access
-
-If you need to access localizations without a BuildContext (e.g., in business logic):
-
-```dart
-// Direct locale-based access
-final l10n = AppLocalizations.forLocale(const Locale('en'));
-print(l10n.appTitle);
-```
-
-### Access Locale Information
-
-```dart
-class HomePage extends StatelessComponent {
-  @override
-  Component build(BuildContext context) {
-    // Get the LocaleProvider instance
-    final provider = LocaleProvider.of(context);
-    final locale = provider.locale;
-
-    return div([
-      h1([text('Current Locale: ${locale.toLanguageTag()}')]),
-      p([text('Language: ${locale.languageCode}')]),
-      p([text('Country: ${locale.countryCode ?? "None"}')]),
-    ]);
-  }
-}
-```
-
-### Use maybeOf for nullable access
-
-```dart
-class MyComponent extends StatelessComponent {
-  @override
-  Component build(BuildContext context) {
-    // Returns null if no LocaleProvider is found
-    final provider = LocaleProvider.maybeOf(context);
-    final locale = provider?.locale ?? const Locale('en');
-
-    return div([text('Locale: ${locale.toLanguageTag()}')]);
-  }
-}
-```
-
-### Creating Locale objects
-
-```dart
-// Language only
-const locale1 = Locale('en');
-
-// Language and country
-const locale2 = Locale('en', 'US');
-
-// From language tag
-final locale3 = Locale.fromLanguageTag('en_US');
-final locale4 = Locale.fromLanguageTag('fr');
-```
-
-## ARB File Localization (Code Generation)
-
-The package supports automatic code generation from ARB (Application Resource Bundle) files, similar to Flutter's `gen_l10n`.
-
-### 1. Configure in pubspec.yaml
-
-Add the `jaspr_localizations` configuration to your `pubspec.yaml`:
+Configure localization in your `pubspec.yaml`:
 
 ```yaml
 jaspr_localizations:
   arb-dir: lib/l10n
   template-arb-file: app_en.arb
-  output-localization-file: generated/app_localizations.g.dart
-  output-class: AppLocalizations
+  output-localization-file: lib/generated/l10n.dart
+  output-class: L10n
 ```
 
-**Configuration Options:**
+## Basic Usage
 
-- `arb-dir`: Directory containing ARB files (default: `lib/l10n`)
-- `template-arb-file`: Template ARB file name (default: `app_en.arb`)
-- `output-localization-file`: Generated file path (default: `l10n/AppLocalizations.g.dart`)
-- `output-class`: Generated class name (default: `AppLocalizations`)
+### 1. Create ARB Files
 
-### 2. Create ARB files
+Create your localization files in `lib/l10n/`:
 
-Create ARB files in `lib/l10n/`:
-
-**lib/l10n/app_en.arb:**
+**lib/l10n/app_en.arb**:
 
 ```json
 {
   "@@locale": "en",
   "appTitle": "My Application",
-  "@appTitle": {
-    "description": "The title of the application"
-  },
   "welcomeMessage": "Welcome to {appName}!",
   "@welcomeMessage": {
-    "description": "Welcome message with placeholder",
     "placeholders": {
-      "appName": {
-        "type": "String"
-      }
+      "appName": {"type": "String"}
     }
   }
 }
 ```
 
-**lib/l10n/app_es.arb:**
+**lib/l10n/app_es.arb**:
 
 ```json
 {
-  "@@locale": "es",
+  "@@locale": "es", 
   "appTitle": "Mi Aplicación",
-  "@appTitle": {
-    "description": "El título de la aplicación"
-  },
-  "welcomeMessage": "¡Bienvenido a {appName}!",
-  "@welcomeMessage": {
-    "description": "Mensaje de bienvenida con placeholder",
-    "placeholders": {
-      "appName": {
-        "type": "String"
-      }
-    }
-  }
+  "welcomeMessage": "¡Bienvenido a {appName}!"
 }
 ```
 
-### 3. Generate localization code
+### 2. Generate Localization Code
 
-Run the build runner to generate Dart code:
+Run the code generator:
 
 ```bash
 dart run build_runner build
 ```
 
-This generates `lib/l10n/AppLocalizations.g.dart` with type-safe localization classes.
+### 3. Set Up Your App
 
-### 4. Use generated localizations
+Wrap your application with localization providers:
 
 ```dart
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_localizations/jaspr_localizations.dart';
-import 'generated/app_localizations.g.dart';
+import 'generated/l10n.dart';
 
-class MyApp extends StatelessComponent {
+class App extends StatelessComponent {
   @override
   Component build(BuildContext context) {
-    return LocaleProvider(
-      locale: const Locale('en'),
-      delegates: const [AppLocalizationsDelegate()],
-      child: const HomePage(),
+    return LocalizationApp(
+      supportedLocales: L10nDelegate.supportedLocales,
+      initialLocale: L10nDelegate.supportedLocales.first,
+      delegates: const [L10nDelegate()],
+      builder: (context, locale) => div([
+        // Your app content here
+        const HomePage(),
+      ]),
     );
   }
 }
+```
 
+### 4. Use Localizations in Components
+
+Access localized strings in your components:
+
+```dart
 class HomePage extends StatelessComponent {
   @override
   Component build(BuildContext context) {
-    // Access localizations using BuildContext
-    final l10n = AppLocalizations.of(context);
+    final l10n = L10n.from(LocaleProvider.of(context).currentLocale.toLanguageTag());
     
     return div([
       h1([text(l10n.appTitle)]),
@@ -238,50 +140,369 @@ class HomePage extends StatelessComponent {
 }
 ```
 
-### ARB File Format
+## Advanced Features
 
-- **Message Keys**: Simple string keys (e.g., `"appTitle"`)
-- **Metadata Keys**: Prefixed with `@` (e.g., `"@appTitle"`)
-- **Placeholders**: Use `{placeholderName}` in messages
-- **Placeholder Types**: Supported types are `String`, `int`, `num`, `DateTime`
+### Dynamic Locale Switching
 
-Example with placeholders:
+Create interactive language switchers:
+
+```dart
+class LanguageSwitcher extends StatelessComponent {
+  @override
+  Component build(BuildContext context) {
+    final provider = LocaleProvider.of(context);
+    final currentLocale = provider.currentLocale;
+    
+    return div([
+      ...provider.supportedLocales.map((locale) {
+        final isActive = currentLocale == locale;
+        return button(
+          classes: isActive ? 'active' : '',
+          onClick: () => LocaleProvider.setLocale(context, locale),
+          [text(_getLanguageName(locale))],
+        );
+      }),
+    ]);
+  }
+}
+```
+
+### ICU MessageFormat Support
+
+Handle complex localization scenarios with plurals and selects:
 
 ```json
 {
-  "itemCount": "You have {count} items",
+  "itemCount": "{count, plural, =0{No items} =1{One item} other{{count} items}}",
+  "genderMessage": "{gender, select, male{He likes Jaspr} female{She likes Jaspr} other{They like Jaspr}}"
+}
+```
+
+### Custom Locale Management
+
+For advanced use cases, create your own locale controller:
+
+```dart
+class CustomApp extends StatefulComponent {
+  @override
+  State<CustomApp> createState() => _CustomAppState();
+}
+
+class _CustomAppState extends State<CustomApp> {
+  late LocaleController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = LocaleController(
+      initialLocale: const Locale('en'),
+      supportedLocales: [
+        const Locale('en'),
+        const Locale('es'),
+        const Locale('fr'),
+      ],
+    );
+  }
+
+  @override
+  Component build(BuildContext context) {
+    return LocaleProvider.withController(
+      controller: _controller,
+      child: LocaleBuilder(
+        controller: _controller,
+        builder: (context, locale) => MyAppContent(),
+      ),
+    );
+  }
+}
+```
+
+## Configuration Options
+
+### ARB Directory Structure
+
+Organize your localization files:
+
+```
+```text
+lib/
+  l10n/
+    app_en.arb    # Template file (required)
+    app_es.arb    # Spanish translations
+    app_fr.arb    # French translations
+    app_de.arb    # German translations
+  generated/
+    l10n.dart     # Generated code (auto-created)
+```
+```
+
+### Pubspec Configuration
+
+Full configuration options:
+
+```yaml
+jaspr_localizations:
+  enabled: true                                    # Enable/disable generation
+  arb-dir: lib/l10n                               # ARB files directory
+  template-arb-file: app_en.arb                   # Template ARB file
+  output-localization-file: lib/generated/l10n.dart  # Output file path
+  output-class: L10n                              # Generated class name
+```
+
+## ICU MessageFormat Reference
+
+### Pluralization
+
+Handle different plural forms across languages:
+
+```json
+{
+  "itemCount": "{count, plural, =0{No items} =1{One item} other{{count} items}}",
   "@itemCount": {
-    "description": "Shows number of items",
     "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "5"
-      }
+      "count": {"type": "num"}
     }
   }
 }
 ```
 
-Generated method:
-
-```dart
-String itemCount(int count) => 'You have $count items';
-```
-
-## ICU MessageFormat Support
-
-jaspr_localizations supports ICU MessageFormat syntax for advanced localization features:
-
-### Plural Messages
-
-Use plural forms to handle different quantities correctly in different languages.
-
-**Syntax:** `{variable, plural, form1{message1} form2{message2} ...}`
-
 **Supported plural forms:**
+
 - **Exact values**: `=0`, `=1`, `=2`, etc. - Match specific numbers
 - **Named forms**: `zero`, `one`, `two`, `few`, `many`, `other`
 - **Required**: The `other` form is always required as a fallback
+
+### Selection
+
+Create conditional messages based on variables:
+
+```json
+{
+  "genderMessage": "{gender, select, male{He codes} female{She codes} other{They code}}",
+  "@genderMessage": {
+    "placeholders": {
+      "gender": {"type": "String"}
+    }
+  }
+}
+```
+
+### Number and Date Formatting
+
+Use type-safe placeholders for formatted values:
+
+```json
+{
+  "priceDisplay": "Price: {amount}",
+  "lastUpdated": "Updated: {date}",
+  "@priceDisplay": {
+    "placeholders": {
+      "amount": {"type": "num", "format": "currency"}
+    }
+  },
+  "@lastUpdated": {
+    "placeholders": {
+      "date": {"type": "DateTime"}
+    }
+  }
+}
+```
+
+## Migration Guide
+
+### From String-based Localization
+
+If you're migrating from a string-based localization system:
+
+1. Replace string locale identifiers with `Locale` objects
+2. Update provider access patterns
+3. Migrate to ARB files for better tooling support
+
+```dart
+// Before
+final locale = 'en_US';
+final provider = LocaleProvider.of(context);
+
+// After  
+final locale = const Locale('en', 'US');
+final provider = LocaleProvider.of(context);
+final localeString = provider.currentLocale.toLanguageTag();
+```
+
+### From Flutter Localizations
+
+Jaspr Localizations uses nearly identical APIs to Flutter:
+
+1. ARB files are compatible
+2. Generated classes follow the same patterns
+3. Delegate pattern is preserved
+
+## Performance Considerations
+
+### Build-time Generation
+
+- Localizations are generated at build time for zero runtime overhead
+- Type safety prevents common localization errors
+- Dead code elimination removes unused translations
+
+### Runtime Efficiency
+
+- InheritedComponent pattern ensures minimal rebuilds
+- Locale changes only affect dependent components
+- Optimized string interpolation and formatting
+
+### Best Practices
+
+```dart
+// ✅ Good: Cache localization instance
+class MyComponent extends StatelessComponent {
+  @override
+  Component build(BuildContext context) {
+    final l10n = L10n.from(LocaleProvider.of(context).currentLocale.toLanguageTag());
+    return div([
+      h1([text(l10n.title)]),
+      p([text(l10n.description)]),
+    ]);
+  }
+}
+
+// ❌ Avoid: Multiple provider lookups
+class BadComponent extends StatelessComponent {
+  @override
+  Component build(BuildContext context) {
+    return div([
+      h1([text(L10n.from(LocaleProvider.of(context).currentLocale.toLanguageTag()).title)]),
+      p([text(L10n.from(LocaleProvider.of(context).currentLocale.toLanguageTag()).description)]),
+    ]);
+  }
+}
+```
+
+## API Documentation
+
+### Core Classes
+
+#### `Locale`
+
+Represents a locale with language and optional country code.
+
+```dart
+const locale = Locale('en', 'US');
+final tag = locale.toLanguageTag(); // 'en_US'
+```
+
+#### `LocaleProvider`
+
+InheritedComponent for providing locale context.
+
+```dart
+LocaleProvider.of(context);        // Get provider (throws if not found)
+LocaleProvider.maybeOf(context);   // Get provider (returns null if not found)
+LocaleProvider.setLocale(context, locale); // Change locale
+```
+
+#### `LocaleController`
+
+Manages locale state and notifications.
+
+```dart
+final controller = LocaleController(
+  initialLocale: const Locale('en'),
+  supportedLocales: [const Locale('en'), const Locale('es')],
+);
+controller.setLocale(const Locale('es'));
+controller.nextLocale(); // Cycle to next supported locale
+```
+
+### Generated Classes
+
+#### Localization Delegate
+
+```dart
+class L10nDelegate extends LocalizationsDelegate<L10n> {
+  static const List<Locale> supportedLocales = [...];
+  bool isSupported(Locale locale) => ...;
+  Future<L10n> load(Locale locale) async => ...;
+}
+```
+
+#### Localization Class
+
+```dart
+abstract class L10n {
+  static L10n from(String locale) => ...;
+  String get appTitle;
+  String welcomeMessage(String name);
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Build generation fails:**
+
+```bash
+# Clean and rebuild
+dart run build_runner clean
+dart run build_runner build --delete-conflicting-outputs
+```
+
+**Locale not found errors:**
+
+- Verify ARB files exist for all supported locales
+- Check locale codes match between ARB files and code
+- Ensure template ARB file is specified correctly
+
+**Missing translations:**
+
+- All ARB files must contain the same message keys
+- Template ARB file defines the complete message set
+- Run build_runner after adding new messages
+
+### Performance Issues
+
+If you experience slow locale switching:
+
+- Use `LocaleBuilder` for targeted rebuilds
+- Avoid frequent locale changes
+- Consider caching heavy localization computations
+
+## Resources
+
+- [Jaspr Documentation](https://docs.page/schultek/jaspr)
+- [Flutter Internationalization](https://docs.flutter.dev/development/accessibility-and-localization/internationalization)
+- [ICU MessageFormat Guide](http://userguide.icu-project.org/formatparse/messages)
+- [ARB File Specification](https://github.com/google/app-resource-bundle)
+
+## Example Projects
+
+Check out the `/example` directory for a complete working example showing:
+
+- Multi-language support (8 languages)
+- Dynamic locale switching
+- Complex ICU MessageFormat usage
+- Performance optimizations
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
+
+1. Fork the repository
+2. Clone your fork: `git clone <your-fork-url>`
+3. Install dependencies: `dart pub get`
+4. Run tests: `dart test`
+5. Make your changes and submit a pull request
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 **Example:**
 
@@ -403,7 +624,7 @@ print(l10n.genderMessage('other'));   // "They like Flutter"
 }
 ```
 
-### Best Practices
+### ICU MessageFormat Guidelines
 
 1. **Always include the 'other' form** in plural and select messages
 2. **Use exact values (`=0`, `=1`)** for common cases like "no items" and "1 item"
