@@ -1,5 +1,5 @@
-// Copyright 2024 The Jaspr Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
+// Copyright 2025 zoocityboy. All rights reserved.
+// Use of this source code is governed by a MIT that can be
 // found in the LICENSE file.
 
 // Based on Flutter's gen_l10n_types.dart but adapted for Jaspr framework
@@ -9,8 +9,8 @@ import 'dart:convert';
 
 import 'base/logger.dart';
 import 'base/file_system.dart';
-import 'localizations_utils.dart';
-import 'message_parser.dart';
+import 'utils/localizations_utils.dart';
+import 'utils/message_parser.dart';
 
 // The set of date formats that can be automatically localized.
 // Based on Flutter's validDateFormats but adapted for Jaspr
@@ -98,8 +98,13 @@ class JasprL10nException implements Exception {
 }
 
 class JasprL10nParserException extends JasprL10nException {
-  JasprL10nParserException(this.error, this.fileName, this.messageId, this.messageString, this.charNumber)
-    : super('''
+  JasprL10nParserException(
+    this.error,
+    this.fileName,
+    this.messageId,
+    this.messageString,
+    this.charNumber,
+  ) : super('''
 [$fileName:$messageId] $error
     $messageString
     ${List<String>.filled(charNumber, ' ').join()}^''');
@@ -140,7 +145,12 @@ class Placeholder {
       type = _stringAttribute(resourceId, name, attributes, 'type'),
       format = _stringAttribute(resourceId, name, attributes, 'format'),
       optionalParameters = _optionalParameters(resourceId, name, attributes),
-      isCustomDateFormat = _boolAttribute(resourceId, name, attributes, 'isCustomDateFormat');
+      isCustomDateFormat = _boolAttribute(
+        resourceId,
+        name,
+        attributes,
+        'isCustomDateFormat',
+      );
 
   final String resourceId;
   final String name;
@@ -155,13 +165,18 @@ class Placeholder {
   var isDateTime = false;
   var requiresDateFormatting = false;
 
-  bool get requiresFormatting => requiresDateFormatting || requiresNumFormatting;
-  bool get requiresNumFormatting => <String>['int', 'num', 'double'].contains(type) && format != null;
+  bool get requiresFormatting =>
+      requiresDateFormatting || requiresNumFormatting;
+  bool get requiresNumFormatting =>
+      <String>['int', 'num', 'double'].contains(type) && format != null;
   bool get hasValidNumberFormat => _validNumberFormats.contains(format);
-  bool get hasNumberFormatWithParameters => _numberFormatsWithNamedParameters.contains(format);
+  bool get hasNumberFormatWithParameters =>
+      _numberFormatsWithNamedParameters.contains(format);
   // 'format' can contain a number of date time formats separated by `dateFormatPartsDelimiter`.
-  List<String> get dateFormatParts => format?.split(_dateFormatPartsDelimiter) ?? <String>[];
-  bool get hasValidDateFormat => dateFormatParts.every(validDateFormats.contains);
+  List<String> get dateFormatParts =>
+      format?.split(_dateFormatPartsDelimiter) ?? <String>[];
+  bool get hasValidDateFormat =>
+      dateFormatParts.every(validDateFormats.contains);
 
   static String? _stringAttribute(
     String resourceId,
@@ -182,7 +197,12 @@ class Placeholder {
     return value;
   }
 
-  static bool? _boolAttribute(String resourceId, String name, Map<String, Object?> attributes, String attributeName) {
+  static bool? _boolAttribute(
+    String resourceId,
+    String name,
+    Map<String, Object?> attributes,
+    String attributeName,
+  ) {
     final Object? value = attributes[attributeName];
     if (value == null) {
       return null;
@@ -199,7 +219,11 @@ class Placeholder {
     return value == 'true';
   }
 
-  static List<OptionalParameter> _optionalParameters(String resourceId, String name, Map<String, Object?> attributes) {
+  static List<OptionalParameter> _optionalParameters(
+    String resourceId,
+    String name,
+    Map<String, Object?> attributes,
+  ) {
     final Object? value = attributes['optionalParameters'];
     if (value == null) {
       return <OptionalParameter>[];
@@ -212,8 +236,13 @@ class Placeholder {
       );
     }
     final Map<String, Object?> optionalParameterMap = value;
-    return optionalParameterMap.keys.map<OptionalParameter>((String parameterName) {
-      return OptionalParameter(parameterName, optionalParameterMap[parameterName]!);
+    return optionalParameterMap.keys.map<OptionalParameter>((
+      String parameterName,
+    ) {
+      return OptionalParameter(
+        parameterName,
+        optionalParameterMap[parameterName]!,
+      );
     }).toList();
   }
 }
@@ -230,8 +259,16 @@ class Message {
     this.logger,
   }) : assert(resourceId.isNotEmpty),
        value = _value(templateBundle.resources, resourceId),
-       description = _description(templateBundle.resources, resourceId, isResourceAttributeRequired),
-       templatePlaceholders = _placeholders(templateBundle.resources, resourceId, isResourceAttributeRequired),
+       description = _description(
+         templateBundle.resources,
+         resourceId,
+         isResourceAttributeRequired,
+       ),
+       templatePlaceholders = _placeholders(
+         templateBundle.resources,
+         resourceId,
+         isResourceAttributeRequired,
+       ),
        localePlaceholders = <LocaleInfo, Map<String, Placeholder>>{},
        messages = <LocaleInfo, String?>{},
        parsedMessages = <LocaleInfo, Node?>{} {
@@ -249,7 +286,9 @@ class Message {
 
       List<String>? validPlaceholders;
       if (useRelaxedSyntax) {
-        validPlaceholders = templatePlaceholders.entries.map((MapEntry<String, Placeholder> e) => e.key).toList();
+        validPlaceholders = templatePlaceholders.entries
+            .map((MapEntry<String, Placeholder> e) => e.key)
+            .toList();
       }
 
       try {
@@ -292,14 +331,17 @@ class Message {
       return templatePlaceholders.values;
     }
     return templatePlaceholders.values.map(
-      (Placeholder templatePlaceholder) => placeholders[templatePlaceholder.name] ?? templatePlaceholder,
+      (Placeholder templatePlaceholder) =>
+          placeholders[templatePlaceholder.name] ?? templatePlaceholder,
     );
   }
 
   static String _value(Map<String, Object?> bundle, String resourceId) {
     final Object? value = bundle[resourceId];
     if (value == null) {
-      throw JasprL10nException('A value for resource "$resourceId" was not found.');
+      throw JasprL10nException(
+        'A value for resource "$resourceId" was not found.',
+      );
     }
     if (value is! String) {
       throw JasprL10nException('The value of "$resourceId" is not a string.');
@@ -332,8 +374,16 @@ class Message {
     return attributes as Map<String, Object?>?;
   }
 
-  static String? _description(Map<String, Object?> bundle, String resourceId, bool isResourceAttributeRequired) {
-    final Map<String, Object?>? resourceAttributes = _attributes(bundle, resourceId, isResourceAttributeRequired);
+  static String? _description(
+    Map<String, Object?> bundle,
+    String resourceId,
+    bool isResourceAttributeRequired,
+  ) {
+    final Map<String, Object?>? resourceAttributes = _attributes(
+      bundle,
+      resourceId,
+      isResourceAttributeRequired,
+    );
     if (resourceAttributes == null) {
       return null;
     }
@@ -343,7 +393,9 @@ class Message {
       return null;
     }
     if (value is! String) {
-      throw JasprL10nException('The description for "@$resourceId" is not a properly formatted String.');
+      throw JasprL10nException(
+        'The description for "@$resourceId" is not a properly formatted String.',
+      );
     }
     return value;
   }
@@ -353,7 +405,11 @@ class Message {
     String resourceId,
     bool isResourceAttributeRequired,
   ) {
-    final Map<String, Object?>? resourceAttributes = _attributes(bundle, resourceId, isResourceAttributeRequired);
+    final Map<String, Object?>? resourceAttributes = _attributes(
+      bundle,
+      resourceId,
+      isResourceAttributeRequired,
+    );
     if (resourceAttributes == null) {
       return <String, Placeholder>{};
     }
@@ -377,7 +433,10 @@ class Message {
             'with string valued keys.',
           );
         }
-        return MapEntry<String, Placeholder>(placeholderName, Placeholder(resourceId, placeholderName, value));
+        return MapEntry<String, Placeholder>(
+          placeholderName,
+          Placeholder(resourceId, placeholderName, value),
+        );
       }),
     );
   }
@@ -390,18 +449,29 @@ class Message {
     // Helper for getting placeholder by name.
     for (final LocaleInfo locale in parsedMessages.keys) {
       Placeholder? getPlaceholder(String name) =>
-          localePlaceholders[locale]?[name] ?? templatePlaceholders[name] ?? undeclaredPlaceholders[name];
+          localePlaceholders[locale]?[name] ??
+          templatePlaceholders[name] ??
+          undeclaredPlaceholders[name];
       if (parsedMessages[locale] == null) {
         continue;
       }
       final traversalStack = <Node>[parsedMessages[locale]!];
       while (traversalStack.isNotEmpty) {
         final Node node = traversalStack.removeLast();
-        if (<ST>[ST.placeholderExpr, ST.pluralExpr, ST.selectExpr, ST.argumentExpr].contains(node.type)) {
+        if (<ST>[
+          ST.placeholderExpr,
+          ST.pluralExpr,
+          ST.selectExpr,
+          ST.argumentExpr,
+        ].contains(node.type)) {
           final String identifier = node.children[1].value!;
           Placeholder? placeholder = getPlaceholder(identifier);
           if (placeholder == null) {
-            placeholder = Placeholder(resourceId, identifier, <String, Object?>{});
+            placeholder = Placeholder(
+              resourceId,
+              identifier,
+              <String, Object?>{},
+            );
             undeclaredPlaceholders[identifier] = placeholder;
           }
           if (node.type == ST.pluralExpr) {
@@ -422,36 +492,53 @@ class Message {
       }
     }
     templatePlaceholders.addEntries(
-      undeclaredPlaceholders.entries.toList()
-        ..sort((MapEntry<String, Placeholder> p1, MapEntry<String, Placeholder> p2) => p1.key.compareTo(p2.key)),
+      undeclaredPlaceholders.entries.toList()..sort(
+        (MapEntry<String, Placeholder> p1, MapEntry<String, Placeholder> p2) =>
+            p1.key.compareTo(p2.key),
+      ),
     );
 
     bool atMostOneOf(bool x, bool y, bool z) {
       return x && !y && !z || !x && y && !z || !x && !y && z || !x && !y && !z;
     }
 
-    for (final Placeholder placeholder in templatePlaceholders.values.followedBy(
-      localePlaceholders.values.expand((Map<String, Placeholder> e) => e.values),
-    )) {
-      if (!atMostOneOf(placeholder.isPlural, placeholder.isDateTime, placeholder.isSelect)) {
-        throw JasprL10nException('Placeholder is used as plural/select/datetime in certain languages.');
+    for (final Placeholder placeholder
+        in templatePlaceholders.values.followedBy(
+          localePlaceholders.values.expand(
+            (Map<String, Placeholder> e) => e.values,
+          ),
+        )) {
+      if (!atMostOneOf(
+        placeholder.isPlural,
+        placeholder.isDateTime,
+        placeholder.isSelect,
+      )) {
+        throw JasprL10nException(
+          'Placeholder is used as plural/select/datetime in certain languages.',
+        );
       } else if (placeholder.isPlural) {
         if (placeholder.type == null) {
           placeholder.type = 'num';
         } else if (!<String>['num', 'int'].contains(placeholder.type)) {
-          throw JasprL10nException("Placeholders used in plurals must be of type 'num' or 'int'");
+          throw JasprL10nException(
+            "Placeholders used in plurals must be of type 'num' or 'int'",
+          );
         }
       } else if (placeholder.isSelect) {
         if (placeholder.type == null) {
           placeholder.type = 'String';
         } else if (placeholder.type != 'String') {
-          throw JasprL10nException("Placeholders used in selects must be of type 'String'");
+          throw JasprL10nException(
+            "Placeholders used in selects must be of type 'String'",
+          );
         }
       } else if (placeholder.isDateTime) {
         if (placeholder.type == null) {
           placeholder.type = 'DateTime';
         } else if (placeholder.type != 'DateTime') {
-          throw JasprL10nException("Placeholders used in datetime expressions much be of type 'DateTime'");
+          throw JasprL10nException(
+            "Placeholders used in datetime expressions much be of type 'DateTime'",
+          );
         }
       }
       placeholder.type ??= 'Object';
@@ -494,9 +581,13 @@ class AppResourceBundle {
         // If Locale.tryParse fails, it returns null.
         final Locale? parserResult = Locale.tryParse(localePart);
         // If the parserResult is not an actual locale identifier, end the loop.
-        if (parserResult != null && _iso639Languages.contains(parserResult.languageCode)) {
+        if (parserResult != null &&
+            _iso639Languages.contains(parserResult.languageCode)) {
           // The parsed result uses dashes ('-'), but we want underscores ('_').
-          final String parserLocaleString = parserResult.toString().replaceAll('-', '_');
+          final String parserLocaleString = parserResult.toString().replaceAll(
+            '-',
+            '_',
+          );
 
           if (localeString == null) {
             // If @@locale was not defined, use the filename locale suffix.
@@ -531,11 +622,23 @@ class AppResourceBundle {
       );
     }
 
-    final Iterable<String> ids = resources.keys.where((String key) => !key.startsWith('@'));
-    return AppResourceBundle._(file, LocaleInfo.fromString(localeString), resources, ids);
+    final Iterable<String> ids = resources.keys.where(
+      (String key) => !key.startsWith('@'),
+    );
+    return AppResourceBundle._(
+      file,
+      LocaleInfo.fromString(localeString),
+      resources,
+      ids,
+    );
   }
 
-  const AppResourceBundle._(this.file, this.locale, this.resources, this.resourceIds);
+  const AppResourceBundle._(
+    this.file,
+    this.locale,
+    this.resources,
+    this.resourceIds,
+  );
 
   final JasprFile file;
   final LocaleInfo locale;
@@ -573,7 +676,11 @@ class AppResourceBundleCollection {
     // "languageToLocales[bundle.locale.languageCode]" is not null
     // by the time we handle locales with country codes.
     final List<JasprFile> files =
-        directory.listSync().whereType<JasprFile>().where((JasprFile e) => filenameRE.hasMatch(e.path)).toList()
+        directory
+            .listSync()
+            .whereType<JasprFile>()
+            .where((JasprFile e) => filenameRE.hasMatch(e.path))
+            .toList()
           ..sort(sortFilesByPath);
     for (final file in files) {
       final bundle = AppResourceBundle(file);
@@ -588,8 +695,13 @@ class AppResourceBundleCollection {
       languageToLocales[bundle.locale.languageCode]!.add(bundle.locale);
     }
 
-    languageToLocales.forEach((String language, List<LocaleInfo> listOfCorrespondingLocales) {
-      final List<String> localeStrings = listOfCorrespondingLocales.map((LocaleInfo locale) {
+    languageToLocales.forEach((
+      String language,
+      List<LocaleInfo> listOfCorrespondingLocales,
+    ) {
+      final List<String> localeStrings = listOfCorrespondingLocales.map((
+        LocaleInfo locale,
+      ) {
         return locale.toString();
       }).toList();
       if (!localeStrings.contains(language)) {
@@ -604,10 +716,18 @@ class AppResourceBundleCollection {
       }
     });
 
-    return AppResourceBundleCollection._(directory, localeToBundle, languageToLocales);
+    return AppResourceBundleCollection._(
+      directory,
+      localeToBundle,
+      languageToLocales,
+    );
   }
 
-  const AppResourceBundleCollection._(this._directory, this._localeToBundle, this._languageToLocales);
+  const AppResourceBundleCollection._(
+    this._directory,
+    this._localeToBundle,
+    this._languageToLocales,
+  );
 
   final JasprDirectory _directory;
   final Map<LocaleInfo, AppResourceBundle> _localeToBundle;
@@ -618,7 +738,8 @@ class AppResourceBundleCollection {
   AppResourceBundle? bundleFor(LocaleInfo locale) => _localeToBundle[locale];
 
   Iterable<String> get languages => _languageToLocales.keys;
-  Iterable<LocaleInfo> localesForLanguage(String language) => _languageToLocales[language] ?? <LocaleInfo>[];
+  Iterable<LocaleInfo> localesForLanguage(String language) =>
+      _languageToLocales[language] ?? <LocaleInfo>[];
 
   @override
   String toString() {

@@ -1,8 +1,7 @@
 // ignore_for_file: type=lint
 
 import 'package:intl/intl.dart' as intl;
-import 'package:jaspr_localizations/src/jaspr_localizations_base.dart';
-import 'package:jaspr_localizations/src/localizations_delegate.dart';
+import 'package:jaspr_localizations/jaspr_localizations.dart';
 
 abstract class L10n {
   L10n(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());

@@ -1,4 +1,4 @@
-import 'jaspr_localizations_base.dart';
+import 'package:jaspr_localizations/src/base/locale.dart';
 
 /// Localization delegate base class for Jaspr applications
 ///

@@ -1,8 +1,8 @@
+import 'package:example/generated/l10n.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_localizations/jaspr_localizations.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 
-import 'generated/l10n.dart';
 import 'pages/home.dart';
 
 // The main component of your application.
@@ -10,17 +10,30 @@ import 'pages/home.dart';
 // By using multi-page routing, this component will only be built on the server during pre-rendering and
 // **not** executed on the client. Instead only the nested [Home] and [About] components will be mounted on the client.
 @client
-class App extends StatelessComponent {
+class App extends StatefulComponent {
   const App({super.key});
 
   @override
-  Component build(BuildContext context) {
-    // This method is rerun every time the component is rebuilt.
+  State createState() => AppState();
+}
 
+class AppState extends State<App> {
+  late Locale currentLocale;
+  late List<Locale> supportedLocales;
+
+  @override
+  void initState() {
+    supportedLocales = L10nDelegate.supportedLocales;
+    currentLocale = supportedLocales.first;
+    super.initState();
+  }
+
+  @override
+  Component build(BuildContext context) {
     // Use LocalizationApp for automatic locale switching and rebuilding
-    return LocalizationApp(
-      supportedLocales: L10nDelegate.supportedLocales,
-      initialLocale: L10nDelegate.supportedLocales.first,
+    return JasprLocalizations(
+      supportedLocales: supportedLocales,
+      initialLocale: currentLocale,
       delegates: const [L10nDelegate()],
       builder: (context, locale) => div(classes: 'main', [
         Router(

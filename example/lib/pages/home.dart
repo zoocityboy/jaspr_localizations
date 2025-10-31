@@ -1,4 +1,6 @@
+import 'package:example/generated/l10n.dart';
 import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_localizations/jaspr_localizations.dart';
 
 import '../components/language.dart';
 
@@ -38,6 +40,12 @@ class HomeState extends State<Home> {
       p([text('You successfully create a new Jaspr site with jaspr_localizations.')]),
       div(styles: Styles(height: 100.px), []),
       const LanguageComponent(),
+
+      div(styles: Styles(height: 50.px), []),
+      JasprLocalizations.withLocale(
+        locale: L10nDelegate.supportedLocales.last,
+        child: LanguageComponent(),
+      ),
       div(styles: Styles(height: 50.px), []),
     ]);
   }

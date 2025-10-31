@@ -1,12 +1,12 @@
-// Copyright 2024 The Jaspr Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
+// Copyright 2025 zoocityboy. All rights reserved.
+// Use of this source code is governed by a MIT that can be
 // found in the LICENSE file.
 
 import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart';
 
-import 'base/file_system.dart';
-import 'base/logger.dart';
+import 'file_system.dart';
+import 'logger.dart';
 
 /// Configuration for jaspr_localizations code generation
 class L10nConfig {
@@ -82,7 +82,11 @@ class L10nConfig {
   final String? untranslatedMessagesFile;
 
   /// Load configuration from l10n.yaml file
-  static L10nConfig? fromL10nYaml(String projectRoot, JasprFileSystem fileSystem, Logger logger) {
+  static L10nConfig? fromL10nYaml(
+    String projectRoot,
+    JasprFileSystem fileSystem,
+    Logger logger,
+  ) {
     final l10nYamlPath = path.join(projectRoot, 'l10n.yaml');
     final l10nFile = fileSystem.file(l10nYamlPath);
 
@@ -97,12 +101,16 @@ class L10nConfig {
 
       return L10nConfig(
         arbDir: yamlMap['arb-dir'] as String? ?? 'lib/l10n',
-        templateArbFile: yamlMap['template-arb-file'] as String? ?? 'app_en.arb',
-        outputLocalizationFile: yamlMap['output-localization-file'] as String? ?? 'app_localizations.dart',
+        templateArbFile:
+            yamlMap['template-arb-file'] as String? ?? 'app_en.arb',
+        outputLocalizationFile:
+            yamlMap['output-localization-file'] as String? ??
+            'app_localizations.dart',
         outputClass: yamlMap['output-class'] as String? ?? 'AppLocalizations',
-        preferredSupportedLocales: (yamlMap['preferred-supported-locales'] as YamlList?)
-            ?.map((e) => e.toString())
-            .toList(),
+        preferredSupportedLocales:
+            (yamlMap['preferred-supported-locales'] as YamlList?)
+                ?.map((e) => e.toString())
+                .toList(),
         header: yamlMap['header'] as String?,
         headerFile: yamlMap['header-file'] as String?,
         useDeferredLoading: yamlMap['use-deferred-loading'] as bool? ?? false,
@@ -113,8 +121,10 @@ class L10nConfig {
         useNamedParameters: yamlMap['use-named-parameters'] as bool? ?? false,
         nullableGetter: yamlMap['nullable-getter'] as bool? ?? true,
         useFormat: yamlMap['format'] as bool? ?? true,
-        requiredResourceAttributes: yamlMap['required-resource-attributes'] as bool? ?? false,
-        untranslatedMessagesFile: yamlMap['untranslated-messages-file'] as String?,
+        requiredResourceAttributes:
+            yamlMap['required-resource-attributes'] as bool? ?? false,
+        untranslatedMessagesFile:
+            yamlMap['untranslated-messages-file'] as String?,
       );
     } catch (e) {
       logger.printError('Error parsing l10n.yaml: $e');
@@ -123,7 +133,11 @@ class L10nConfig {
   }
 
   /// Load configuration from pubspec.yaml jaspr_localizations section
-  static L10nConfig? fromPubspecYaml(String projectRoot, JasprFileSystem fileSystem, Logger logger) {
+  static L10nConfig? fromPubspecYaml(
+    String projectRoot,
+    JasprFileSystem fileSystem,
+    Logger logger,
+  ) {
     final pubspecPath = path.join(projectRoot, 'pubspec.yaml');
     final pubspecFile = fileSystem.file(pubspecPath);
 
@@ -144,27 +158,41 @@ class L10nConfig {
 
       return L10nConfig(
         arbDir: jasprL10nConfig['arb-dir'] as String? ?? 'lib/l10n',
-        templateArbFile: jasprL10nConfig['template-arb-file'] as String? ?? 'app_en.arb',
-        outputLocalizationFile: jasprL10nConfig['output-localization-file'] as String? ?? 'app_localizations.dart',
-        outputClass: jasprL10nConfig['output-class'] as String? ?? 'AppLocalizations',
-        preferredSupportedLocales: (jasprL10nConfig['preferred-supported-locales'] as YamlList?)
-            ?.map((e) => e.toString())
-            .toList(),
+        templateArbFile:
+            jasprL10nConfig['template-arb-file'] as String? ?? 'app_en.arb',
+        outputLocalizationFile:
+            jasprL10nConfig['output-localization-file'] as String? ??
+            'app_localizations.dart',
+        outputClass:
+            jasprL10nConfig['output-class'] as String? ?? 'AppLocalizations',
+        preferredSupportedLocales:
+            (jasprL10nConfig['preferred-supported-locales'] as YamlList?)
+                ?.map((e) => e.toString())
+                .toList(),
         header: jasprL10nConfig['header'] as String?,
         headerFile: jasprL10nConfig['header-file'] as String?,
-        useDeferredLoading: jasprL10nConfig['use-deferred-loading'] as bool? ?? false,
-        useRelaxedSyntax: jasprL10nConfig['use-relaxed-syntax'] as bool? ?? false,
-        useSyntheticPackage: jasprL10nConfig['synthetic-package'] as bool? ?? true,
+        useDeferredLoading:
+            jasprL10nConfig['use-deferred-loading'] as bool? ?? false,
+        useRelaxedSyntax:
+            jasprL10nConfig['use-relaxed-syntax'] as bool? ?? false,
+        useSyntheticPackage:
+            jasprL10nConfig['synthetic-package'] as bool? ?? true,
         useEscaping: jasprL10nConfig['use-escaping'] as bool? ?? false,
-        suppressWarnings: jasprL10nConfig['suppress-warnings'] as bool? ?? false,
-        useNamedParameters: jasprL10nConfig['use-named-parameters'] as bool? ?? false,
+        suppressWarnings:
+            jasprL10nConfig['suppress-warnings'] as bool? ?? false,
+        useNamedParameters:
+            jasprL10nConfig['use-named-parameters'] as bool? ?? false,
         nullableGetter: jasprL10nConfig['nullable-getter'] as bool? ?? true,
         useFormat: jasprL10nConfig['format'] as bool? ?? true,
-        requiredResourceAttributes: jasprL10nConfig['required-resource-attributes'] as bool? ?? false,
-        untranslatedMessagesFile: jasprL10nConfig['untranslated-messages-file'] as String?,
+        requiredResourceAttributes:
+            jasprL10nConfig['required-resource-attributes'] as bool? ?? false,
+        untranslatedMessagesFile:
+            jasprL10nConfig['untranslated-messages-file'] as String?,
       );
     } catch (e) {
-      logger.printError('Error parsing pubspec.yaml jaspr_localizations section: $e');
+      logger.printError(
+        'Error parsing pubspec.yaml jaspr_localizations section: $e',
+      );
       return null;
     }
   }
@@ -173,7 +201,11 @@ class L10nConfig {
   /// 1. Try l10n.yaml first (Flutter standard)
   /// 2. Fall back to pubspec.yaml jaspr_localizations section
   /// 3. Use defaults if neither exists
-  static L10nConfig load(String projectRoot, JasprFileSystem fileSystem, Logger logger) {
+  static L10nConfig load(
+    String projectRoot,
+    JasprFileSystem fileSystem,
+    Logger logger,
+  ) {
     // Try l10n.yaml first (preferred, follows Flutter conventions)
     final l10nConfig = fromL10nYaml(projectRoot, fileSystem, logger);
     if (l10nConfig != null) {
@@ -184,7 +216,9 @@ class L10nConfig {
     // Try pubspec.yaml jaspr_localizations section
     final pubspecConfig = fromPubspecYaml(projectRoot, fileSystem, logger);
     if (pubspecConfig != null) {
-      logger.printStatus('Using configuration from pubspec.yaml jaspr_localizations section');
+      logger.printStatus(
+        'Using configuration from pubspec.yaml jaspr_localizations section',
+      );
       return pubspecConfig;
     }
 
@@ -212,7 +246,9 @@ class L10nConfig {
   /// Get absolute path for output directory
   String getOutputDirPath(String projectRoot) {
     final outputDir = path.dirname(outputLocalizationFile);
-    return path.isAbsolute(outputDir) ? outputDir : path.join(projectRoot, outputDir);
+    return path.isAbsolute(outputDir)
+        ? outputDir
+        : path.join(projectRoot, outputDir);
   }
 
   /// Get just the filename for output localization file
