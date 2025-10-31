@@ -211,14 +211,14 @@ class JasprLocalizations extends StatefulComponent {
   Locale get initialLocale => _initialLocale ?? supportedLocales.first;
 
   @override
-  State<JasprLocalizations> createState() => _LocalizationAppState();
+  State<JasprLocalizations> createState() => _JasprLocalizationsState();
 }
 
 /// The state for [JasprLocalizations].
 ///
 /// This state class manages the [LocaleChangeNotifier] controller and
 /// listens for locale changes, triggering rebuilds when necessary.
-class _LocalizationAppState extends State<JasprLocalizations> {
+class _JasprLocalizationsState extends State<JasprLocalizations> {
   /// The controller that manages the current locale state.
   late LocaleChangeNotifier _controller;
 
