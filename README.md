@@ -1,7 +1,7 @@
 
 ![Jaspr Localizations](https://raw.githubusercontent.com/zoocityboy/jaspr_localizations/refs/heads/feat/language_switcher/docs/jaspr_localizations.png "Resource")
 
-** Made by 🦏 [zoocityboy](https://zoocityboy.github.io/) with ❤️ for the Jaspr community**
+** Made by 🦏 [zoocityboy](https://zoocityboy.github.io/) with ❤️ for the Jaspr community **
 
 
 [![Pub Version](https://img.shields.io/pub/v/jaspr_localizations?style=flat-square)](https://pub.dev/packages/jaspr_localizations)
