@@ -1,5 +1,5 @@
-// Copyright 2024 The Jaspr Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
+// Copyright 2025 zoocityboy. All rights reserved.
+// Use of this source code is governed by a MIT that can be
 // found in the LICENSE file.
 
 // Jaspr Localization Generator
@@ -11,8 +11,8 @@ import 'base/file_system.dart';
 import 'base/logger.dart';
 import 'jaspr_l10n_templates.dart';
 import 'jaspr_l10n_types.dart';
-import 'localizations_utils.dart';
-import 'message_parser.dart';
+import 'utils/localizations_utils.dart';
+import 'utils/message_parser.dart';
 
 /// Generates Dart localization files from ARB files for Jaspr framework
 class LocalizationsGenerator {
@@ -97,7 +97,9 @@ class LocalizationsGenerator {
     }
 
     if (allBundles.bundles.isEmpty) {
-      throw JasprL10nException('No ARB files found in: ${templateArbFile.parent.path}');
+      throw JasprL10nException(
+        'No ARB files found in: ${templateArbFile.parent.path}',
+      );
     }
 
     allMessages = <Message>[];
@@ -122,7 +124,8 @@ class LocalizationsGenerator {
 
   String get generatedClassname => classNameString;
 
-  List<LocaleInfo> get supportedLocales => preferredSupportedLocales ?? allBundles.locales.toList();
+  List<LocaleInfo> get supportedLocales =>
+      preferredSupportedLocales ?? allBundles.locales.toList();
 
   String _generateMethod(Message message, LocaleInfo locale) {
     if (message.templatePlaceholders.isEmpty) {
@@ -133,7 +136,10 @@ class LocalizationsGenerator {
   }
 
   String _generateGetterMethod(Message message, LocaleInfo locale) {
-    String translationForMessage = _generateTranslationForMessage(message, locale);
+    String translationForMessage = _generateTranslationForMessage(
+      message,
+      locale,
+    );
     return getterMethodTemplate
         .replaceAll('@{methodName}', message.resourceId)
         .replaceAll('@{message}', translationForMessage);
@@ -141,7 +147,8 @@ class LocalizationsGenerator {
 
   String _generateRegularMethod(Message message, LocaleInfo locale) {
     // Use template placeholders to ensure consistent parameter types across all locales
-    final Iterable<Placeholder> placeholders = message.templatePlaceholders.values;
+    final Iterable<Placeholder> placeholders =
+        message.templatePlaceholders.values;
     final String methodParameters = placeholders
         .map((Placeholder placeholder) {
           final String placeholderType = placeholder.type!;
@@ -149,7 +156,10 @@ class LocalizationsGenerator {
         })
         .join(', ');
 
-    String translationForMessage = _generateTranslationForMessage(message, locale);
+    String translationForMessage = _generateTranslationForMessage(
+      message,
+      locale,
+    );
 
     final String dateFormatting = _dateFormattingStatements(placeholders);
     final String numberFormatting = _numberFormattingStatements(placeholders);
@@ -177,7 +187,8 @@ class LocalizationsGenerator {
       case ST.placeholderExpr:
         final String identifier = node.children[1].value!;
         // Use template placeholders to ensure consistent types
-        final Placeholder placeholder = message.templatePlaceholders[identifier]!;
+        final Placeholder placeholder =
+            message.templatePlaceholders[identifier]!;
         return _generatePlaceholderCode(placeholder);
       case ST.pluralExpr:
         return _generatePluralCode(node, message, locale);
@@ -188,7 +199,9 @@ class LocalizationsGenerator {
           return "''";
         }
         // Generate string interpolation instead of concatenation
-        final parts = node.children.map((Node child) => _generateCodeFromNode(child, message, locale));
+        final parts = node.children.map(
+          (Node child) => _generateCodeFromNode(child, message, locale),
+        );
         final interpolatedParts = <String>[];
 
         for (final part in parts) {
@@ -222,7 +235,9 @@ class LocalizationsGenerator {
     }
 
     // For numeric types, convert to string when used in concatenation
-    if (placeholder.type == 'num' || placeholder.type == 'int' || placeholder.type == 'double') {
+    if (placeholder.type == 'num' ||
+        placeholder.type == 'int' ||
+        placeholder.type == 'double') {
       return '${placeholder.name}.toString()';
     }
 
@@ -243,7 +258,8 @@ class LocalizationsGenerator {
       // [ST.other, ST.openBrace, ST.message, ST.closeBrace] - specifically "other"
 
       if (pluralPart.children.length >= 4) {
-        if (pluralPart.children[0].type == ST.equalSign && pluralPart.children[1].type == ST.number) {
+        if (pluralPart.children[0].type == ST.equalSign &&
+            pluralPart.children[1].type == ST.number) {
           // Structure: [=, number, {, message, }]
           final String numberValue = pluralPart.children[1].value!;
           caseKey = _mapExplicitPluralForm(numberValue);
@@ -254,10 +270,16 @@ class LocalizationsGenerator {
           messageNode = pluralPart.children[2]; // Skip the openBrace at index 1
         }
       } else {
-        throw JasprL10nException('Invalid plural part structure: ${pluralPart.children.length} children');
+        throw JasprL10nException(
+          'Invalid plural part structure: ${pluralPart.children.length} children',
+        );
       }
 
-      final String caseValue = _generateCodeFromNode(messageNode, message, locale);
+      final String caseValue = _generateCodeFromNode(
+        messageNode,
+        message,
+        locale,
+      );
       pluralCases.add("$caseKey: $caseValue");
     }
 
@@ -293,7 +315,11 @@ class LocalizationsGenerator {
 
     for (final Node selectPart in node.children[5].children) {
       final String caseKey = selectPart.children[0].value!;
-      final String caseValue = _generateCodeFromNode(selectPart.children[2], message, locale);
+      final String caseValue = _generateCodeFromNode(
+        selectPart.children[2],
+        message,
+        locale,
+      );
       selectCases.add("'$caseKey': $caseValue");
     }
 
@@ -385,9 +411,12 @@ class LocalizationsGenerator {
   String _generateFromSwitchCases() {
     final StringBuffer sb = StringBuffer();
     for (final LocaleInfo locale in supportedLocales) {
-      final String className = '$classNameString${_camelCase(locale.toString())}';
+      final String className =
+          '$classNameString${_camelCase(locale.toString())}';
       sb.writeln(
-        jasprFromSwitchCaseTemplate.replaceAll('@{locale}', locale.toString()).replaceAll('@{class}', className),
+        jasprFromSwitchCaseTemplate
+            .replaceAll('@{locale}', locale.toString())
+            .replaceAll('@{class}', className),
       );
     }
     return sb.toString();
@@ -437,15 +466,22 @@ class LocalizationsGenerator {
         .replaceAll('@{classMethods}', _generateBaseClassMethods())
         .replaceAll('@{fromSwitchCases}', _generateFromSwitchCases())
         .replaceAll('@{supportedLocalesList}', _generateSupportedLocalesList())
-        .replaceAll('@{supportedLocalesStringList}', _generateSupportedLocalesStringList())
-        .replaceAll('@{defaultClass}', '$classNameString${_camelCase(templateBundle.locale.toString())}');
+        .replaceAll(
+          '@{supportedLocalesStringList}',
+          _generateSupportedLocalesStringList(),
+        )
+        .replaceAll(
+          '@{defaultClass}',
+          '$classNameString${_camelCase(templateBundle.locale.toString())}',
+        );
 
     final StringBuffer localizationFileContent = StringBuffer();
     localizationFileContent.writeln(baseClassContent);
 
     // Generate individual locale classes
     for (final LocaleInfo locale in supportedLocales) {
-      final String className = '$classNameString${_camelCase(locale.toString())}';
+      final String className =
+          '$classNameString${_camelCase(locale.toString())}';
       final String classContent = jasprFileTemplate
           .replaceAll('@{locale}', locale.toString())
           .replaceAll('@{class}', className)
@@ -453,7 +489,9 @@ class LocalizationsGenerator {
           .replaceAll('@{classMethods}', _generateClassMethods(locale));
 
       localizationFileContent.writeln();
-      localizationFileContent.writeln(classContent.substring(classContent.indexOf('class')));
+      localizationFileContent.writeln(
+        classContent.substring(classContent.indexOf('class')),
+      );
     }
 
     return localizationFileContent.toString();

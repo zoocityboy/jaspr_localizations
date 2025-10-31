@@ -3,7 +3,11 @@ import 'package:jaspr_localizations/jaspr_localizations.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final supportedLocales = {const Locale('en', 'US'), const Locale('es', 'ES'), const Locale('fr', 'FR')};
+  final supportedLocales = {
+    const Locale('en', 'US'),
+    const Locale('es', 'ES'),
+    const Locale('fr', 'FR'),
+  };
 
   group('Locale Tests', () {
     test('Locale creates correctly with language code only', () {
@@ -48,25 +52,33 @@ void main() {
   group('LocaleProvider Tests', () {
     test('LocaleProvider stores locale correctly', () {
       const testLocale = Locale('en', 'US');
-      final provider = LocaleProvider(locale: testLocale, supportedLocales: supportedLocales, child: div([]));
+      final provider = JasprLocalizationProvider(
+        locale: testLocale,
+        supportedLocales: supportedLocales,
+        child: div([]),
+      );
 
       expect(provider.locale, equals(testLocale));
     });
 
     test('LocaleProvider stores supported locales correctly', () {
       const testLocale = Locale('en', 'US');
-      final provider = LocaleProvider(locale: testLocale, supportedLocales: supportedLocales, child: div([]));
+      final provider = JasprLocalizationProvider(
+        locale: testLocale,
+        supportedLocales: supportedLocales,
+        child: div([]),
+      );
 
       expect(provider.supportedLocales, equals(supportedLocales));
     });
 
     test('updateShouldNotify returns true when locale changes', () {
-      final oldProvider = LocaleProvider(
+      final oldProvider = JasprLocalizationProvider(
         locale: const Locale('en', 'US'),
         supportedLocales: supportedLocales,
         child: div([]),
       );
-      final newProvider = LocaleProvider(
+      final newProvider = JasprLocalizationProvider(
         locale: const Locale('es', 'ES'),
         supportedLocales: supportedLocales,
         child: div([]),
@@ -76,12 +88,12 @@ void main() {
     });
 
     test('updateShouldNotify returns true when supported locales change', () {
-      final oldProvider = LocaleProvider(
+      final oldProvider = JasprLocalizationProvider(
         locale: const Locale('en', 'US'),
         supportedLocales: supportedLocales,
         child: div([]),
       );
-      final newProvider = LocaleProvider(
+      final newProvider = JasprLocalizationProvider(
         locale: const Locale('en', 'US'),
         supportedLocales: {const Locale('en', 'US')},
         child: div([]),
@@ -90,19 +102,22 @@ void main() {
       expect(newProvider.updateShouldNotify(oldProvider), isTrue);
     });
 
-    test('updateShouldNotify returns false when locale and supported locales stay the same', () {
-      final oldProvider = LocaleProvider(
-        locale: const Locale('en', 'US'),
-        supportedLocales: supportedLocales,
-        child: div([]),
-      );
-      final newProvider = LocaleProvider(
-        locale: const Locale('en', 'US'),
-        supportedLocales: supportedLocales,
-        child: div([]),
-      );
+    test(
+      'updateShouldNotify returns false when locale and supported locales stay the same',
+      () {
+        final oldProvider = JasprLocalizationProvider(
+          locale: const Locale('en', 'US'),
+          supportedLocales: supportedLocales,
+          child: div([]),
+        );
+        final newProvider = JasprLocalizationProvider(
+          locale: const Locale('en', 'US'),
+          supportedLocales: supportedLocales,
+          child: div([]),
+        );
 
-      expect(newProvider.updateShouldNotify(oldProvider), isFalse);
-    });
+        expect(newProvider.updateShouldNotify(oldProvider), isFalse);
+      },
+    );
   });
 }

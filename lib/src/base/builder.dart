@@ -4,11 +4,11 @@ library;
 import 'package:build/build.dart';
 import 'package:path/path.dart' as path;
 
-import 'base/file_system.dart';
-import 'base/logger.dart';
-import 'jaspr_l10n_generator.dart';
+import 'file_system.dart';
+import 'logger.dart';
+import '../jaspr_l10n_generator.dart';
 import 'l10n_config.dart';
-import 'localizations_utils.dart';
+import '../utils/localizations_utils.dart';
 
 /// Builder for generating Jaspr localization files from ARB files
 /// Now uses Flutter-aligned localization system

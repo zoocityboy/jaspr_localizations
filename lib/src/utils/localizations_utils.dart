@@ -1,12 +1,12 @@
-// Copyright 2024 The Jaspr Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
+// Copyright 2025 zoocityboy. All rights reserved.
+// Use of this source code is governed by a MIT that can be
 // found in the LICENSE file.
 
 // Utilities for Jaspr localization based on Flutter's localizations_utils.dart
 
 import 'package:meta/meta.dart';
 
-import 'base/file_system.dart';
+import '../base/file_system.dart';
 
 int sortFilesByPath(JasprFile a, JasprFile b) {
   return a.path.compareTo(b.path);
@@ -32,10 +32,15 @@ class LocaleInfo implements Comparable<LocaleInfo> {
   ///
   /// When `deriveScriptCode` is true, if [scriptCode] was unspecified, it will
   /// be derived from the [languageCode] and [countryCode] if possible.
-  factory LocaleInfo.fromString(String locale, {bool deriveScriptCode = false}) {
+  factory LocaleInfo.fromString(
+    String locale, {
+    bool deriveScriptCode = false,
+  }) {
     // Normalize hyphens to underscores for parsing
     final String normalizedLocale = locale.replaceAll('-', '_');
-    final List<String> codes = normalizedLocale.split('_'); // [language, script, country]
+    final List<String> codes = normalizedLocale.split(
+      '_',
+    ); // [language, script, country]
     assert(codes.isNotEmpty && codes.length < 4);
     final String languageCode = codes[0];
     String? scriptCode;
@@ -98,7 +103,11 @@ class LocaleInfo implements Comparable<LocaleInfo> {
   String camelCase() {
     return originalString
         .split('_')
-        .map<String>((String part) => part.substring(0, 1).toUpperCase() + part.substring(1).toLowerCase())
+        .map<String>(
+          (String part) =>
+              part.substring(0, 1).toUpperCase() +
+              part.substring(1).toLowerCase(),
+        )
         .join();
   }
 
@@ -151,19 +160,26 @@ String generateString(String value) {
 
 /// Given a list of normal strings or interpolated variables, concatenate them
 /// into a single dart string to be returned.
-String generateReturnExpr(List<String> expressions, {bool isSingleStringVar = false}) {
+String generateReturnExpr(
+  List<String> expressions, {
+  bool isSingleStringVar = false,
+}) {
   if (expressions.isEmpty) {
     return "''";
   } else if (isSingleStringVar) {
     // If our expression is "$varName" where varName is a String, this is equivalent to just varName.
     return expressions[0].substring(1);
   } else {
-    final String string = expressions.reversed.fold<String>('', (String string, String expression) {
+    final String string = expressions.reversed.fold<String>('', (
+      String string,
+      String expression,
+    ) {
       if (expression[0] != r'$') {
         return expression + string;
       }
       final alphanumeric = RegExp(r'^([0-9a-zA-Z]|_)+$');
-      if (alphanumeric.hasMatch(expression.substring(1)) && !(string.isNotEmpty && alphanumeric.hasMatch(string[0]))) {
+      if (alphanumeric.hasMatch(expression.substring(1)) &&
+          !(string.isNotEmpty && alphanumeric.hasMatch(string[0]))) {
         return '$expression$string';
       } else {
         return '\${${expression.substring(1)}}$string';

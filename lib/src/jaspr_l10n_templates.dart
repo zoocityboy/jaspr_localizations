@@ -1,5 +1,5 @@
-// Copyright 2024 The Jaspr Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
+// Copyright 2025 zoocityboy. All rights reserved.
+// Use of this source code is governed by a MIT that can be
 // found in the LICENSE file.
 
 // Code generation templates for Jaspr localization
@@ -190,8 +190,7 @@ const jasprBaseClassTemplate = '''
 // ignore_for_file: type=lint
 
 import 'package:intl/intl.dart' as intl;
-import 'package:jaspr_localizations/src/jaspr_localizations_base.dart';
-import 'package:jaspr_localizations/src/localizations_delegate.dart';
+import 'package:jaspr_localizations/jaspr_localizations.dart';
 
 abstract class @{class} {
   @{class}(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());

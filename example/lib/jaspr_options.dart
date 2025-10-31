@@ -35,5 +35,8 @@ JasprOptions get defaultJasprOptions => JasprOptions(
 
     prefix1.Home: ClientTarget<prefix1.Home>('pages/home'),
   },
-  styles: () => [...prefix0.LanguageComponent.styles, ...prefix2.App.styles],
+  styles: () => [
+    ...prefix0.LanguageComponent.styles,
+    ...prefix2.AppState.styles,
+  ],
 );
