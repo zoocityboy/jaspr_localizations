@@ -1,40 +1,183 @@
-/// Jaspr Localizations - Provides locale management for Jaspr applications
+/// Jaspr Localizations - Internationalization and localization for Jaspr applications.
 ///
-/// This package provides an InheritedComponent-based approach to managing
-/// localization in Jaspr applications using a dedicated Locale class.
-/// Now includes Flutter-aligned ARB file processing and code generation.
+/// A comprehensive localization solution for Jaspr applications that provides
+/// locale management, automatic UI rebuilding on locale changes, and ARB file
+/// processing for translations.
 ///
-/// ## Usage
+/// ## Features
 ///
-/// Wrap your application with [LocaleProvider]:
+/// * **Locale Management**: Built-in locale switching with [JasprLocalizations]
+/// * **Platform Detection**: Automatic language detection from browser or system
+/// * **ARB Processing**: Flutter-aligned ARB file processing with code generation
+/// * **Reactive Updates**: Automatic UI rebuilding when locale changes
+/// * **Type Safety**: Generated classes provide compile-time safety for translations
+///
+/// ## Quick Start
+///
+/// ### 1. Add ARB Files
+///
+/// Create ARB (Application Resource Bundle) files in `lib/l10n/`:
+///
+/// ```
+/// lib/l10n/
+///   ├── app_en.arb  (template - required)
+///   ├── app_es.arb
+///   ├── app_fr.arb
+///   └── app_de.arb
+/// ```
+///
+/// Example `app_en.arb`:
+/// ```json
+/// {
+///   "@@locale": "en",
+///   "welcomeMessage": "Welcome to our app!",
+///   "greeting": "Hello, {name}!",
+///   "@greeting": {
+///     "placeholders": {
+///       "name": {
+///         "type": "String"
+///       }
+///     }
+///   }
+/// }
+/// ```
+///
+/// ### 2. Configure l10n.yaml
+///
+/// Create `l10n.yaml` in your project root:
+/// ```yaml
+/// arb-dir: lib/l10n
+/// template-arb-file: app_en.arb
+/// output-localization-file: l10n.dart
+/// output-class: AppLocalizations
+/// ```
+///
+/// ### 3. Wrap Your App
+///
+/// Use [JasprLocalizations] to add localization to your app:
 ///
 /// ```dart
-/// LocaleProvider(
-///   locale: const Locale('en', 'US'),
-///   supportedLocales: {
-///     const Locale('en', 'US'),
-///     const Locale('es', 'ES'),
-///   },
-///   child: MyApp(),
+/// import 'package:jaspr/jaspr.dart';
+/// import 'package:jaspr_localizations/jaspr_localizations.dart';
+/// import 'package:example/generated/l10n.dart';
+///
+/// class App extends StatelessComponent {
+///   @override
+///   Component build(BuildContext context) sync* {
+///     return JasprLocalizations(
+///       supportedLocales: [
+///         Locale('en', 'US'),
+///         Locale('es', 'ES'),
+///         Locale('fr', 'FR'),
+///       ],
+///       delegates: [AppLocalizations.delegate],
+///       builder: (context, locale) {
+///         return MyHomePage();
+///       },
+///     );
+///   }
+/// }
+/// ```
+///
+/// ### 4. Access Localized Strings
+///
+/// ```dart
+/// class MyComponent extends StatelessComponent {
+///   @override
+///   Component build(BuildContext context) sync* {
+///     final l10n = AppLocalizations.of(context);
+///
+///     return fragment([
+///         Text(l10n.welcomeMessage),
+///         Text(l10n.greeting('Alice')),
+///     ]);
+///   }
+/// }
+/// ```
+///
+/// ### 5. Change Locale at Runtime
+///
+/// ```dart
+/// // Switch to Spanish
+/// JasprLocalizationProvider.setLanguage(context, 'es', 'ES');
+///
+/// // Or use Locale object
+/// JasprLocalizationProvider.setLocale(context, Locale('fr', 'FR'));
+/// ```
+///
+/// ## Advanced Usage
+///
+/// ### Platform-Aware Language Detection
+///
+/// Detect the user's preferred language from browser or system:
+///
+/// ```dart
+/// import 'package:jaspr_localizations/jaspr_localizations.dart';
+///
+/// void main() {
+///   // Get current locale from browser/platform
+///   final locale = getCurrentLocale();
+///
+///   runApp(
+///     JasprLocalizations(
+///       supportedLocales: supportedLocales,
+///       initialLocale: locale,  // Use detected locale
+///       delegates: [AppLocalizations.delegate],
+///       builder: (context, locale) => MyApp(),
+///     ),
+///   );
+/// }
+/// ```
+///
+/// ### Scoped Locale Override
+///
+/// Display specific content in a different locale:
+///
+/// ```dart
+/// JasprLocalizations.withLocale(
+///   locale: Locale('es', 'ES'),
+///   child: PreviewWidget(),
 /// )
 /// ```
 ///
-/// Access the locale in descendant components:
+/// ### Listen to Locale Changes
 ///
 /// ```dart
-/// final provider = LocaleProvider.of(context);
-/// final locale = provider.locale;
-/// final languageTag = locale.toLanguageTag(); // 'en_US'
+/// class LocaleListener extends StatefulComponent {
+///   @override
+///   State createState() => _LocaleListenerState();
+/// }
+///
+/// class _LocaleListenerState extends State<LocaleListener> {
+///   @override
+///   void didChangeDependencies() {
+///     super.didChangeDependencies();
+///     final locale = JasprLocalizationProvider.of(context).currentLocale;
+///     print('Locale changed to: ${locale.toLanguageTag()}');
+///   }
+///
+///   @override
+///   Component build(BuildContext context) {
+///     // Build UI
+///   }
+/// }
 /// ```
 ///
-/// ## ARB File Processing
+/// ## Core Components
 ///
-/// Place ARB files in `lib/l10n/` directory:
-/// - `app_en.arb` (template)
-/// - `app_es.arb`
-/// - etc.
+/// * [JasprLocalizations] - High-level component with automatic rebuilding
+/// * [JasprLocalizationProvider] - Low-level provider for locale information
+/// * [Locale] - Represents a language/country combination
+/// * [LocaleChangeNotifier] - Controller for managing locale state
+/// * [getCurrentLocale] - Detects user's preferred locale
+/// * [getCurrentLanguageCode] - Gets language code from browser/platform
+/// * [languageCodeToLocale] - Parses language code strings to Locale objects
 ///
-/// The build system will generate localization classes automatically.
+/// ## See Also
+///
+/// * [Jaspr Documentation](https://docs.page/schultek/jaspr)
+/// * [Flutter Internationalization](https://docs.flutter.dev/development/accessibility-and-localization/internationalization)
+/// * [ARB Format Specification](https://github.com/google/app-resource-bundle)
 library;
 
 // export 'package:intl/intl.dart';

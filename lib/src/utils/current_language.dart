@@ -5,12 +5,44 @@ import 'package:universal_web/web.dart' as web;
 
 /// Gets the current language code from the browser or platform.
 ///
-/// On the client (web), this function retrieves the language from the browser's
-/// navigator.language property, falling back to navigator.languages if available.
+/// This function provides platform-agnostic language detection that works
+/// in both client-side (web) and server-side (Jaspr SSR) contexts.
 ///
-/// On the server, it falls back to the system's current locale from Intl.
+/// ### Client-Side Behavior (Web)
 ///
-/// Returns a language code string (e.g., 'en-US', 'es', 'fr-FR').
+/// On the client, this function retrieves the user's preferred language from:
+/// 1. `navigator.language` - The browser's primary language setting
+/// 2. `navigator.languages[0]` - First language from the user's language preferences
+/// 3. Falls back to 'en' if neither is available
+///
+/// ### Server-Side Behavior
+///
+/// On the server, it retrieves the system locale using `Intl.getCurrentLocale()`,
+/// which returns the locale of the Dart runtime environment.
+///
+/// ### Return Value
+///
+/// Returns a language code string in one of these formats:
+/// * Simple language code: `'en'`, `'es'`, `'fr'`
+/// * Language with region: `'en-US'`, `'es-ES'`, `'zh-CN'`
+/// * Language with script and region: `'zh-Hans-CN'`
+///
+/// ### Example
+///
+/// ```dart
+/// // Get the current language code
+/// final languageCode = getCurrentLanguageCode();
+/// print(languageCode); // e.g., 'en-US'
+///
+/// // Use with languageCodeToLocale
+/// final locale = languageCodeToLocale(languageCode);
+/// print(locale.languageCode); // 'en'
+/// print(locale.countryCode);  // 'US'
+/// ```
+///
+/// See also:
+/// * [getCurrentLocale], which returns a [Locale] object instead of a string
+/// * [languageCodeToLocale], for converting language codes to [Locale] objects
 String getCurrentLanguageCode() {
   if (kIsWeb) {
     // Client-side: Get language from browser
@@ -21,12 +53,24 @@ String getCurrentLanguageCode() {
   }
 }
 
-/// Gets the browser's preferred language.
+/// Gets the browser's preferred language (client-side only).
 ///
-/// Tries to get the language from:
-/// 1. navigator.language (primary language)
-/// 2. First item from navigator.languages array
-/// 3. Falls back to 'en' if neither is available
+/// This internal helper function accesses the browser's navigator API
+/// to retrieve the user's language preferences.
+///
+/// ### Detection Strategy
+///
+/// 1. Attempts to read `navigator.language`
+/// 2. Falls back to `navigator.languages[0]`
+/// 3. Returns 'en' as the ultimate fallback
+///
+/// ### Error Handling
+///
+/// If there's any error accessing browser APIs (e.g., in non-browser environments
+/// or due to security restrictions), the function catches the error and falls back
+/// to 'en'.
+///
+/// Returns a language code string (e.g., 'en-US', 'fr-FR').
 String _getBrowserLanguage() {
   try {
     final navigator = web.window.navigator;
@@ -52,10 +96,26 @@ String _getBrowserLanguage() {
   return 'en';
 }
 
-/// Gets the platform's current language.
+/// Gets the platform's current language (server-side only).
 ///
-/// On the server, this uses Intl.getCurrentLocale() to get the system locale.
-/// Falls back to 'en' if the locale cannot be determined.
+/// This internal helper function retrieves the system locale from the
+/// Dart runtime environment using `Intl.getCurrentLocale()`.
+///
+/// ### Server-Side Detection
+///
+/// On the server, the locale is determined by:
+/// * The system's locale settings
+/// * Environment variables (LC_ALL, LC_MESSAGES, LANG)
+/// * The Dart VM's default locale
+///
+/// ### Error Handling
+///
+/// Returns 'en' if:
+/// * `Intl.getCurrentLocale()` returns an empty string
+/// * The returned value is 'null' (string)
+/// * An exception occurs during locale detection
+///
+/// Returns a language code string (e.g., 'en_US', 'es_ES').
 String _getPlatformLanguage() {
   try {
     final locale = Intl.getCurrentLocale();
@@ -70,15 +130,49 @@ String _getPlatformLanguage() {
   return 'en';
 }
 
-/// Converts a language code to a [Locale] object.
+/// Converts a language code string to a [Locale] object.
 ///
-/// Handles both simple language codes (e.g., 'en') and full locale codes
-/// with country/script codes (e.g., 'en-US', 'zh-Hans-CN').
+/// This function parses language code strings in various formats and
+/// creates appropriate [Locale] objects. It handles multiple standard
+/// formats used in different systems.
 ///
-/// Examples:
-/// - 'en' -> Locale('en')
-/// - 'en-US' -> Locale('en', 'US')
-/// - 'zh-Hans-CN' -> Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN')
+/// ### Supported Formats
+///
+/// * **Simple language code**: `'en'`, `'es'`, `'fr'` → `Locale('en')`
+/// * **Language + country**: `'en-US'`, `'en_US'` → `Locale('en', 'US')`
+/// * **Language + script + country**: `'zh-Hans-CN'` → `Locale('zh', 'CN')`
+///
+/// ### Parsing Rules
+///
+/// * Accepts both hyphen (`-`) and underscore (`_`) as separators
+/// * Language codes are converted to lowercase
+/// * Country codes are converted to uppercase
+/// * Whitespace is trimmed
+/// * Empty strings default to `Locale('en')`
+///
+/// ### Examples
+///
+/// ```dart
+/// languageCodeToLocale('en');         // Locale('en')
+/// languageCodeToLocale('en-US');      // Locale('en', 'US')
+/// languageCodeToLocale('en_GB');      // Locale('en', 'GB')
+/// languageCodeToLocale('zh-Hans-CN'); // Locale('zh', 'CN')
+/// languageCodeToLocale('  es-ES  ');  // Locale('es', 'ES')
+/// languageCodeToLocale('');           // Locale('en') - fallback
+/// ```
+///
+/// ### Parameters
+///
+/// * [languageCode]: The language code string to parse
+///
+/// ### Returns
+///
+/// A [Locale] object. If parsing fails or the input is invalid,
+/// returns `Locale('en')` as a safe fallback.
+///
+/// See also:
+/// * [Locale.fromLanguageTag], for creating locales from IETF tags
+/// * [getCurrentLanguageCode], for getting the current language code
 Locale languageCodeToLocale(String languageCode) {
   // Remove any whitespace
   languageCode = languageCode.trim();
@@ -124,10 +218,46 @@ Locale languageCodeToLocale(String languageCode) {
 
 /// Gets the current locale from the browser or platform.
 ///
-/// This is a convenience method that combines [getCurrentLanguageCode]
-/// and [languageCodeToLocale].
+/// This is a convenience function that combines [getCurrentLanguageCode]
+/// and [languageCodeToLocale] into a single call.
 ///
-/// Returns a [Locale] object representing the current language preference.
+/// ### Usage
+///
+/// Instead of calling:
+/// ```dart
+/// final code = getCurrentLanguageCode();
+/// final locale = languageCodeToLocale(code);
+/// ```
+///
+/// You can simply call:
+/// ```dart
+/// final locale = getCurrentLocale();
+/// ```
+///
+/// ### Return Value
+///
+/// Returns a [Locale] object representing the user's current language
+/// preference from the browser (client-side) or system (server-side).
+///
+/// ### Example
+///
+/// ```dart
+/// // Get current locale
+/// final locale = getCurrentLocale();
+///
+/// // Use with JasprLocalizationProvider
+/// JasprLocalizationProvider.setLocale(context, locale);
+///
+/// // Access locale properties
+/// print('Language: ${locale.languageCode}');
+/// print('Country: ${locale.countryCode}');
+/// print('Language tag: ${locale.toLanguageTag()}');
+/// ```
+///
+/// See also:
+/// * [getCurrentLanguageCode], for getting just the language code string
+/// * [languageCodeToLocale], for converting codes to locales manually
+/// * [JasprLocalizationProvider.setLocale], for setting the app's locale
 Locale getCurrentLocale() {
   final languageCode = getCurrentLanguageCode();
   return languageCodeToLocale(languageCode);
