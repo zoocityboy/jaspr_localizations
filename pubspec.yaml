@@ -4,9 +4,10 @@ maintainer: zoocityboy
 version: 1.0.0+beta.1
 repository: https://github.com/zoocityboy/jaspr_localizations
 issue_tracker: https://github.com/zoocityboy/jaspr_localizations/issues
-# screenshots:
-#   - https://raw.githubusercontent.com/zoocityboy/jaspr_localizations/main/screenshots/screenshot1.png
-#   - https://raw.githubusercontent.com/zoocityboy/jaspr_localizations/main/screenshots/screenshot2.png
+screenshots:
+  - description: "Main screen showcasing localization features."
+    path: docs/jaspr_localizations.png
+  
 topics:
   - l10n
   - localization

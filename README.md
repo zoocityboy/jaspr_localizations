@@ -1,9 +1,13 @@
 # Jaspr Localizations
 
+![Jasp Localizations](docs/jaspr_localizations.png "Resoure")
+
 [![Pub Version](https://img.shields.io/pub/v/jaspr_localizations?style=flat-square)](https://pub.dev/packages/jaspr_localizations)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 [![Dart](https://img.shields.io/badge/Dart-3.9+-blue?style=flat-square&logo=dart)](https://dart.dev)
 [![Jaspr](https://img.shields.io/badge/Jaspr-0.21+-orange?style=flat-square)](https://docs.page/schultek/jaspr)
+
+
 
 Internationalization and localization support for Jaspr applications with ARB file generation and Flutter-like APIs.
 
