@@ -101,8 +101,8 @@ import 'generated/l10n.dart';
 
 class App extends StatelessComponent {
   @override
-  Iterable<Component> build(BuildContext context) sync* {
-    yield JasprLocalizations(
+  Component build(BuildContext context) {
+    return JasprLocalizations(
       supportedLocales: [
         Locale('en', 'US'),
         Locale('es', 'ES'),
@@ -123,10 +123,10 @@ Use the generated localization class:
 ```dart
 class HomePage extends StatelessComponent {
   @override
-  Iterable<Component> build(BuildContext context) sync* {
+  Component build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     
-    yield div([
+    return div([
       h1([text(l10n.appTitle)]),
       p([text(l10n.welcomeMessage('Jaspr'))]),
     ]);
@@ -141,17 +141,18 @@ Create a language switcher:
 ```dart
 class LanguageSwitcher extends StatelessComponent {
   @override
-  Iterable<Component> build(BuildContext context) sync* {
+  Component build(BuildContext context) {
     final provider = JasprLocalizationProvider.of(context);
     final currentLocale = provider.currentLocale;
     
-    for (final locale in provider.supportedLocales) {
-      yield button(
-        classes: currentLocale == locale ? 'active' : '',
-        onClick: () => JasprLocalizationProvider.setLocale(context, locale),
-        [text(locale.languageCode.toUpperCase())],
-      );
-    }
+    return div([
+      for (final locale in provider.supportedLocales)
+        button(
+          classes: currentLocale == locale ? 'active' : '',
+          onClick: () => JasprLocalizationProvider.setLocale(context, locale),
+          [text(locale.languageCode.toUpperCase())],
+        ),
+    ]);
   }
 }
 ```
@@ -171,8 +172,8 @@ The `JasprLocalizations.withLocale` method allows you to display specific conten
 ```dart
 class LanguagePreview extends StatelessComponent {
   @override
-  Iterable<Component> build(BuildContext context) sync* {
-    yield div([
+  Component build(BuildContext context) {
+    return div([
       h2([text('Preview in Multiple Languages')]),
       
       // English
@@ -207,9 +208,9 @@ class LanguagePreview extends StatelessComponent {
 
 class WelcomeMessage extends StatelessComponent {
   @override
-  Iterable<Component> build(BuildContext context) sync* {
+  Component build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    yield p([text(l10n.welcomeMessage('User'))]);
+    return p([text(l10n.welcomeMessage('User'))]);
   }
 }
 ```
@@ -219,8 +220,8 @@ class WelcomeMessage extends StatelessComponent {
 ```dart
 class TranslationComparison extends StatelessComponent {
   @override
-  Iterable<Component> build(BuildContext context) sync* {
-    yield div([
+  Component build(BuildContext context) {
+    return div([
       // Current language
       div([
         h4([text('Current')]),

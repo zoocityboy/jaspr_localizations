@@ -63,7 +63,7 @@
 ///
 /// class App extends StatelessComponent {
 ///   @override
-///   Component build(BuildContext context) sync* {
+///   Component build(BuildContext context) {
 ///     return JasprLocalizations(
 ///       supportedLocales: [
 ///         Locale('en', 'US'),
@@ -84,12 +84,12 @@
 /// ```dart
 /// class MyComponent extends StatelessComponent {
 ///   @override
-///   Component build(BuildContext context) sync* {
+///   Component build(BuildContext context) {
 ///     final l10n = AppLocalizations.of(context);
 ///
-///     return fragment([
-///         Text(l10n.welcomeMessage),
-///         Text(l10n.greeting('Alice')),
+///     return div([
+///       text(l10n.welcomeMessage),
+///       text(l10n.greeting('Alice')),
 ///     ]);
 ///   }
 /// }
@@ -158,7 +158,7 @@
 ///
 ///   @override
 ///   Component build(BuildContext context) {
-///     // Build UI
+///     return div([text('Locale: ${JasprLocalizationProvider.of(context).currentLocale}')]);
 ///   }
 /// }
 /// ```

@@ -244,11 +244,11 @@ class JasprLocalizationProvider extends InheritedComponent {
   /// ```dart
   /// class MyComponent extends StatelessComponent {
   ///   @override
-  ///   Component build(BuildContext context) sync* {
+  ///   Component build(BuildContext context) {
   ///     final provider = JasprLocalizationProvider.of(context);
   ///     final locale = provider.currentLocale;
   ///
-  ///     return Text('Current language: ${locale.languageCode}');
+  ///     return text('Current language: ${locale.languageCode}');
   ///   }
   /// }
   /// ```

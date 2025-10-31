@@ -23,7 +23,7 @@ import 'package:jaspr_localizations/src/widgets/jaspr_locale_builder.dart';
 /// ```dart
 /// class App extends StatelessComponent {
 ///   @override
-///   Component build(BuildContext context) sync* {
+///   Component build(BuildContext context) {
 ///     return JasprLocalizations(
 ///       supportedLocales: [
 ///         Locale('en', 'US'),
