@@ -1,5 +1,4 @@
 import 'package:jaspr_localizations/jaspr_localizations.dart';
-import 'package:jaspr_localizations/src/base/locale.dart';
 import 'package:test/test.dart';
 
 void main() {

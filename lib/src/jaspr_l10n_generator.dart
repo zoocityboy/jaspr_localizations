@@ -77,7 +77,7 @@ class LocalizationsGenerator {
     outputDirectory = fileSystem.directory(outputPathString);
     templateArbFile = fileSystem.file(templateArbPathString);
 
-    final String? templateBundlePathString = templateArbPathString;
+    final String templateBundlePathString = templateArbPathString;
     try {
       templateBundle = AppResourceBundle(templateArbFile);
     } on FileSystemException catch (e) {
@@ -342,6 +342,7 @@ class LocalizationsGenerator {
           if (format != null) {
             return dateFormattingTemplate
                 .replaceAll('@{formatterName}', '${placeholder.name}Formatter')
+                // ignore: unnecessary_brace_in_string_interps
                 .replaceAll('@{constructorCall}', '.${format}')
                 .replaceAll('@{parameters}', 'localeName');
           } else {
@@ -361,6 +362,7 @@ class LocalizationsGenerator {
           final String format = placeholder.format!;
           return numberFormattingTemplate
               .replaceAll('@{formatterName}', '${placeholder.name}Formatter')
+              // ignore: unnecessary_brace_in_string_interps
               .replaceAll('@{constructorCall}', '.${format}')
               .replaceAll('@{parameters}', 'locale: localeName');
         })

@@ -1,6 +1,5 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_localizations/jaspr_localizations.dart';
-import 'package:jaspr_localizations/src/base/locale.dart';
 
 /// Example demonstrating how to get the current language from browser or platform
 ///

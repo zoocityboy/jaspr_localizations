@@ -40,16 +40,14 @@ jobs:
           restore-keys: ${{ runner.os }}-pub-
 
       - name: Install dependencies
-        run: dart pub get
+        run: dart pub get --verbose
         
       - name: Verify formatting
         run: dart format --set-exit-if-changed .
         
       - name: Analyze code
-        run: |
-          dart pub global activate jaspr_cli
-          jaspr analyze --fatal-infos
-        
+        run: dart analyze --fatal-infos
+
       - name: Check package score
         run: |
           dart pub global activate pana
