@@ -1,0 +1,374 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.2.3)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as prerelease'
+        required: false
+        default: false
+        type: boolean
+      skip_tests:
+        description: 'Skip test execution (emergency only)'
+        required: false
+        default: false
+        type: boolean
+  push:
+    tags:
+      - 'v*.*.*'
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+env:
+  PUB_CACHE: /tmp/pub_cache
+  DART_SDK_VERSION: stable
+
+jobs:
+  validate-inputs:
+    name: Validate Inputs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is_prerelease: ${{ steps.version.outputs.is_prerelease }}
+      should_skip_tests: ${{ steps.version.outputs.should_skip_tests }}
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Validate and extract version
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref_type }}" == "tag" ]]; then
+            # Extract version from tag
+            VERSION="${{ github.ref_name }}"
+            VERSION=${VERSION#v}  # Remove 'v' prefix if present
+            IS_PRERELEASE=false
+            SKIP_TESTS=false
+          else
+            # Use workflow dispatch inputs
+            VERSION="${{ github.event.inputs.version }}"
+            IS_PRERELEASE="${{ github.event.inputs.prerelease }}"
+            SKIP_TESTS="${{ github.event.inputs.skip_tests }}"
+          fi
+          
+          # Validate semantic version format
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version format: $VERSION"
+            echo "Version must follow semantic versioning (x.y.z)"
+            exit 1
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+          echo "should_skip_tests=$SKIP_TESTS" >> $GITHUB_OUTPUT
+          
+          echo "Validated version: $VERSION"
+          echo "Is prerelease: $IS_PRERELEASE"
+          echo "Skip tests: $SKIP_TESTS"
+
+  quality-gates:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    needs: validate-inputs
+    if: needs.validate-inputs.outputs.should_skip_tests != 'true'
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ env.DART_SDK_VERSION }}
+          
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.PUB_CACHE }}
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-pub-
+          
+      - name: Install dependencies
+        run: dart pub get
+        
+      - name: Check code formatting
+        run: dart format --set-exit-if-changed .
+        
+      - name: Run static analysis
+        run: dart analyze --fatal-infos
+        
+      - name: Run tests with coverage
+        run: |
+          dart test --reporter=expanded --coverage=coverage
+          dart pub global activate coverage
+          dart pub global run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --report-on=lib
+          
+      - name: Check test coverage
+        run: |
+          dart pub global activate test_coverage
+          dart pub global run test_coverage --min-coverage=90
+          
+      - name: Run package analysis
+        run: |
+          dart pub global activate pana
+          dart pub global run pana --json --no-warning > analysis_result.json
+          SCORE=$(cat analysis_result.json | jq '.scores.grantedPoints // 0')
+          TOTAL=$(cat analysis_result.json | jq '.scores.maxPoints // 1')
+          PERCENTAGE=$(echo "scale=2; $SCORE * 100 / $TOTAL" | bc)
+          echo "Package score: $SCORE/$TOTAL ($PERCENTAGE%)"
+          if (( $(echo "$PERCENTAGE < 100" | bc -l) )); then
+            echo "Package score must be 100/100 for release. Current: $PERCENTAGE%"
+            exit 1
+          fi
+
+  version-update:
+    name: Update Version
+    runs-on: ubuntu-latest
+    needs: [validate-inputs, quality-gates]
+    if: always() && needs.validate-inputs.result == 'success' && (needs.quality-gates.result == 'success' || needs.validate-inputs.outputs.should_skip_tests == 'true')
+    timeout-minutes: 10
+    outputs:
+      changelog_entry: ${{ steps.changelog.outputs.entry }}
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          
+      - name: Setup Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+      - name: Check if version already exists
+        run: |
+          VERSION="${{ needs.validate-inputs.outputs.version }}"
+          
+          # Check if version exists on pub.dev
+          if curl -s "https://pub.dev/api/packages/jaspr_localizations/versions/$VERSION" | grep -q '"version"'; then
+            echo "Version $VERSION already exists on pub.dev"
+            exit 1
+          fi
+          
+          # Check if git tag exists
+          if git tag -l | grep -q "^v$VERSION$"; then
+            echo "Git tag v$VERSION already exists"
+            exit 1
+          fi
+          
+      - name: Update pubspec.yaml version
+        run: |
+          VERSION="${{ needs.validate-inputs.outputs.version }}"
+          sed -i "s/^version: .*/version: $VERSION/" pubspec.yaml
+          
+          # Verify the change
+          grep "^version: $VERSION" pubspec.yaml || (echo "Failed to update version in pubspec.yaml" && exit 1)
+          
+      - name: Generate changelog entry
+        id: changelog
+        run: |
+          VERSION="${{ needs.validate-inputs.outputs.version }}"
+          DATE=$(date +"%Y-%m-%d")
+          
+          # Create changelog entry
+          ENTRY="## $VERSION - $DATE"$'\n'$'\n'"- Package release $VERSION"
+          
+          # Add to changelog if it exists
+          if [ -f CHANGELOG.md ]; then
+            # Create temp file with new entry
+            echo "$ENTRY" > temp_changelog.md
+            echo "" >> temp_changelog.md
+            tail -n +1 CHANGELOG.md >> temp_changelog.md
+            mv temp_changelog.md CHANGELOG.md
+          else
+            # Create new changelog
+            echo "# Changelog" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            echo "$ENTRY" >> CHANGELOG.md
+          fi
+          
+          # Output for use in release notes
+          echo "entry<<EOF" >> $GITHUB_OUTPUT
+          echo "$ENTRY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+      - name: Commit version changes
+        run: |
+          VERSION="${{ needs.validate-inputs.outputs.version }}"
+          git add pubspec.yaml CHANGELOG.md
+          git commit -m "chore: release version $VERSION"
+          git push origin main
+
+  build-package:
+    name: Build Package
+    runs-on: ubuntu-latest
+    needs: [validate-inputs, version-update]
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main  # Get the updated version
+          
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ env.DART_SDK_VERSION }}
+          
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.PUB_CACHE }}
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-pub-
+          
+      - name: Install dependencies
+        run: dart pub get
+        
+      - name: Verify package builds
+        run: dart pub publish --dry-run
+        
+      - name: Generate package checksum
+        run: |
+          tar -czf package.tar.gz lib/ pubspec.yaml README.md CHANGELOG.md
+          sha256sum package.tar.gz > package.sha256
+          
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: package-build
+          path: |
+            package.tar.gz
+            package.sha256
+
+  publish-package:
+    name: Publish Package
+    runs-on: ubuntu-latest
+    needs: [validate-inputs, version-update, build-package]
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main  # Get the updated version
+          
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ env.DART_SDK_VERSION }}
+          
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.PUB_CACHE }}
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-pub-
+          
+      - name: Install dependencies
+        run: dart pub get
+        
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: package-build
+          
+      - name: Verify package integrity
+        run: |
+          sha256sum -c package.sha256
+          
+      - name: Setup pub credentials
+        run: |
+          mkdir -p ~/.config/dart
+          cat << 'EOF' > ~/.config/dart/pub-credentials.json
+          ${{ secrets.PUB_DEV_TOKEN }}
+          EOF
+          
+      - name: Dry run publish
+        run: dart pub publish --dry-run
+        
+      - name: Create git tag
+        run: |
+          VERSION="${{ needs.validate-inputs.outputs.version }}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "v$VERSION" -m "Release version $VERSION"
+          git push origin "v$VERSION"
+          
+      - name: Publish to pub.dev
+        run: dart pub publish --force
+        
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.validate-inputs.outputs.version }}
+          release_name: Release ${{ needs.validate-inputs.outputs.version }}
+          body: |
+            ${{ needs.version-update.outputs.changelog_entry }}
+            
+            ## What's Changed
+            - Package published to [pub.dev](https://pub.dev/packages/jaspr_localizations/versions/${{ needs.validate-inputs.outputs.version }})
+            
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/v${{ needs.validate-inputs.outputs.version }}...v${{ needs.validate-inputs.outputs.version }}
+          draft: false
+          prerelease: ${{ needs.validate-inputs.outputs.is_prerelease == 'true' }}
+          
+      - name: Verify publication
+        run: |
+          VERSION="${{ needs.validate-inputs.outputs.version }}"
+          echo "Waiting for package to be available on pub.dev..."
+          
+          # Wait up to 5 minutes for package to be available
+          for i in {1..30}; do
+            if curl -s "https://pub.dev/api/packages/jaspr_localizations/versions/$VERSION" | grep -q '"version"'; then
+              echo "Package $VERSION is now available on pub.dev!"
+              echo "URL: https://pub.dev/packages/jaspr_localizations/versions/$VERSION"
+              exit 0
+            fi
+            echo "Attempt $i: Package not yet available, waiting 10 seconds..."
+            sleep 10
+          done
+          
+          echo "Package publication verification timed out"
+          exit 1
+          
+      - name: Notify success
+        if: success()
+        run: |
+          VERSION="${{ needs.validate-inputs.outputs.version }}"
+          echo "✅ Successfully published jaspr_localizations v$VERSION"
+          echo "📦 pub.dev: https://pub.dev/packages/jaspr_localizations/versions/$VERSION"
+          echo "🏷️ GitHub Release: ${{ github.server_url }}/${{ github.repository }}/releases/tag/v$VERSION"
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    needs: [validate-inputs, quality-gates, version-update, build-package, publish-package]
+    if: always() && contains(needs.*.result, 'failure')
+    
+    steps:
+      - name: Report failure
+        run: |
+          echo "❌ Release workflow failed"
+          echo "Validate Inputs: ${{ needs.validate-inputs.result }}"
+          echo "Quality Gates: ${{ needs.quality-gates.result }}"
+          echo "Version Update: ${{ needs.version-update.result }}"
+          echo "Build Package: ${{ needs.build-package.result }}"
+          echo "Publish Package: ${{ needs.publish-package.result }}"
+          
+          echo "Please check the workflow logs and fix any issues before retrying."
+          exit 1

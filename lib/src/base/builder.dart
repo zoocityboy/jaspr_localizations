@@ -30,7 +30,9 @@ class JasprLocalizationBuilder implements Builder {
     logger.printStatus('Loaded configuration: $config');
 
     // For template ARB path, we need lib-relative path
-    final arbDirPath = config.arbDir.startsWith('lib/') ? config.arbDir : path.join('lib', config.arbDir);
+    final arbDirPath = config.arbDir.startsWith('lib/')
+        ? config.arbDir
+        : path.join('lib', config.arbDir);
     final templateArbPath = path.join(arbDirPath, config.templateArbFile);
 
     // Output directory and file from config
@@ -41,8 +43,11 @@ class JasprLocalizationBuilder implements Builder {
 
     // Parse preferred supported locales if specified
     List<LocaleInfo>? preferredLocales;
-    if (config.preferredSupportedLocales != null && config.preferredSupportedLocales!.isNotEmpty) {
-      preferredLocales = config.preferredSupportedLocales!.map((locale) => LocaleInfo.fromString(locale)).toList();
+    if (config.preferredSupportedLocales != null &&
+        config.preferredSupportedLocales!.isNotEmpty) {
+      preferredLocales = config.preferredSupportedLocales!
+          .map((locale) => LocaleInfo.fromString(locale))
+          .toList();
     }
 
     try {
@@ -66,7 +71,8 @@ class JasprLocalizationBuilder implements Builder {
         nullableGetter: config.nullableGetter,
         useFormat: config.useFormat,
         requiredResourceAttributes: config.requiredResourceAttributes,
-        untranslatedMessagesFile: config.untranslatedMessagesFile ?? 'untranslated_messages.json',
+        untranslatedMessagesFile:
+            config.untranslatedMessagesFile ?? 'untranslated_messages.json',
         logger: logger,
       );
 
@@ -80,7 +86,9 @@ class JasprLocalizationBuilder implements Builder {
 
       await buildStep.writeAsString(outputId, generatedCode);
 
-      logger.printStatus('Jaspr localization files generated successfully to $outputPath');
+      logger.printStatus(
+        'Jaspr localization files generated successfully to $outputPath',
+      );
     } catch (e, stackTrace) {
       logger.printError('Failed to generate localization files: $e');
       logger.printError('Stack trace: $stackTrace');
