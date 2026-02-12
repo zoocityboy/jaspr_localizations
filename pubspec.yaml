@@ -1,7 +1,7 @@
 name: jaspr_localizations
 description: Internationalization and localization support for Jaspr applications with ARB file generation.
 maintainer: zoocityboy
-version: 1.0.0+beta.3
+version: 1.0.0+beta.4
 repository: https://github.com/zoocityboy/jaspr_localizations
 issue_tracker: https://github.com/zoocityboy/jaspr_localizations/issues
 screenshots:
