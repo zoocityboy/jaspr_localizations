@@ -7,7 +7,6 @@ library;
 import 'package:example/l10n/generated/app_l10n.dart';
 import 'package:jaspr/client.dart';
 import 'package:jaspr_localizations/jaspr_localizations.dart';
-import 'package:jaspr_localizations/src/base/locale.dart';
 
 // This file is generated automatically by Jaspr, do not remove or edit.
 import 'main.client.options.dart';
@@ -25,12 +24,13 @@ void main() {
   // You can wrap this with additional [InheritedComponent]s to share state across multiple
   // @client components if needed.
   runApp(
-    JasprLocalizations(
-      supportedLocales: AppL10nDelegate.supportedLocales,
-      delegates: [AppL10n.delegate],
-      builder: (context, locale) {
-        return const ClientApp();
-      },
-    ),
+    // JasprLocalizations(
+    //   supportedLocales: AppL10nDelegate.supportedLocales,
+    //   delegates: [AppL10n.delegate],
+    //   builder: (context, locale) {
+    //     return const ClientApp();
+    //   },
+    // ),
+    const ClientApp()
   );
 }

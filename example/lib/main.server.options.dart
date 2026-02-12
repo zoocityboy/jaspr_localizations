@@ -27,7 +27,7 @@ import 'package:example/app.dart' as _app;
 /// ```
 ServerOptions get defaultServerOptions => ServerOptions(
   clientId: 'main.client.dart.js',
-  clients: {_home.Home: ClientTarget<_home.Home>('home')},
+  clients: {_app.App: ClientTarget<_app.App>('app')},
   styles: () => [
     ..._language.LanguageComponent.styles,
     ..._home.Home.styles,

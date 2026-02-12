@@ -4,7 +4,6 @@ library;
 import 'package:build/build.dart';
 import 'package:path/path.dart' as path;
 
-import 'file_system.dart';
 import 'local_file_system.dart';
 import 'logger.dart';
 import '../jaspr_l10n_generator.dart';
