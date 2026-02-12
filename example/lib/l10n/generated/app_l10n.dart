@@ -162,7 +162,7 @@ abstract class AppL10n {
   /// context: example:icu
   ///
   /// In en, this message translates to:
-  /// **'{gender, select, male{He likes Flutter} female{She likes Flutter} other{They like Flutter}}'**
+  /// **'{gender, select, male{He likes Jaspr} female{She likes Jaspr} other{They like Jaspr}}'**
   String genderMessage(String gender);
 
 
@@ -218,6 +218,13 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Time remaining: {time}'**
   String timeRemaining(DateTime time);
+
+
+  /// Label for activity details when the date is the same day and start time is different from end time
+  ///
+  /// In en, this message translates to:
+  /// **'{date}: {startTime} to {endTime}'**
+  String activityDetailsDateSameDayWithTime(DateTime date, DateTime startTime, DateTime endTime);
 
 
 }
@@ -324,9 +331,9 @@ class _AppL10nCs extends AppL10n {
     return '${intl.Intl.select(
       gender,
       {
-        'male': 'Má rád Flutter',
-        'female': 'Má ráda Flutter',
-        'other': 'Mají rádi Flutter'
+        'male': 'Má rád Jaspr',
+        'female': 'Má ráda Jaspr',
+        'other': 'Mají rádi Jaspr'
       },
       name: 'genderMessage',
     )}';
@@ -368,17 +375,27 @@ class _AppL10nCs extends AppL10n {
 
   @override
   String lastUpdated(DateTime date) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMd(localeName);
     
-    
-    return 'Naposledy aktualizováno: ${date}';
+    return 'Naposledy aktualizováno: ${dateFormatter.format(date)}';
   }
 
 
   @override
   String timeRemaining(DateTime time) {
+        final intl.DateFormat timeFormatter = intl.DateFormat.Hm(localeName);
     
+    return 'Zbývající čas: ${timeFormatter.format(time)}';
+  }
+
+
+  @override
+  String activityDetailsDateSameDayWithTime(DateTime date, DateTime startTime, DateTime endTime) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMMMMEEEEd(localeName);
+        final intl.DateFormat startTimeFormatter = intl.DateFormat.jm(localeName);
+        final intl.DateFormat endTimeFormatter = intl.DateFormat.jm(localeName);
     
-    return 'Zbývající čas: ${time}';
+    return '${dateFormatter.format(date)}: ${startTimeFormatter.format(startTime)} to ${endTimeFormatter.format(endTime)}';
   }
 
 
@@ -455,9 +472,9 @@ class _AppL10nDe extends AppL10n {
     return '${intl.Intl.select(
       gender,
       {
-        'male': 'Er mag Flutter',
-        'female': 'Sie mag Flutter',
-        'other': 'Sie mögen Flutter'
+        'male': 'Er mag Jaspr',
+        'female': 'Sie mag Jaspr',
+        'other': 'Sie mögen Jaspr'
       },
       name: 'genderMessage',
     )}';
@@ -499,17 +516,27 @@ class _AppL10nDe extends AppL10n {
 
   @override
   String lastUpdated(DateTime date) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMd(localeName);
     
-    
-    return 'Zuletzt aktualisiert: ${date}';
+    return 'Zuletzt aktualisiert: ${dateFormatter.format(date)}';
   }
 
 
   @override
   String timeRemaining(DateTime time) {
+        final intl.DateFormat timeFormatter = intl.DateFormat.Hm(localeName);
     
+    return 'Verbleibende Zeit: ${timeFormatter.format(time)}';
+  }
+
+
+  @override
+  String activityDetailsDateSameDayWithTime(DateTime date, DateTime startTime, DateTime endTime) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMMMMEEEEd(localeName);
+        final intl.DateFormat startTimeFormatter = intl.DateFormat.jm(localeName);
+        final intl.DateFormat endTimeFormatter = intl.DateFormat.jm(localeName);
     
-    return 'Verbleibende Zeit: ${time}';
+    return '${dateFormatter.format(date)}: ${startTimeFormatter.format(startTime)} to ${endTimeFormatter.format(endTime)}';
   }
 
 
@@ -586,9 +613,9 @@ class _AppL10nEn extends AppL10n {
     return '${intl.Intl.select(
       gender,
       {
-        'male': 'He likes Flutter',
-        'female': 'She likes Flutter',
-        'other': 'They like Flutter'
+        'male': 'He likes Jaspr',
+        'female': 'She likes Jaspr',
+        'other': 'They like Jaspr'
       },
       name: 'genderMessage',
     )}';
@@ -630,17 +657,27 @@ class _AppL10nEn extends AppL10n {
 
   @override
   String lastUpdated(DateTime date) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMd(localeName);
     
-    
-    return 'Last updated: ${date}';
+    return 'Last updated: ${dateFormatter.format(date)}';
   }
 
 
   @override
   String timeRemaining(DateTime time) {
+        final intl.DateFormat timeFormatter = intl.DateFormat.Hm(localeName);
     
+    return 'Time remaining: ${timeFormatter.format(time)}';
+  }
+
+
+  @override
+  String activityDetailsDateSameDayWithTime(DateTime date, DateTime startTime, DateTime endTime) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMMMMEEEEd(localeName);
+        final intl.DateFormat startTimeFormatter = intl.DateFormat.jm(localeName);
+        final intl.DateFormat endTimeFormatter = intl.DateFormat.jm(localeName);
     
-    return 'Time remaining: ${time}';
+    return '${dateFormatter.format(date)}: ${startTimeFormatter.format(startTime)} to ${endTimeFormatter.format(endTime)}';
   }
 
 
@@ -717,9 +754,9 @@ class _AppL10nEs extends AppL10n {
     return '${intl.Intl.select(
       gender,
       {
-        'male': 'A él le gusta Flutter',
-        'female': 'A ella le gusta Flutter',
-        'other': 'A ellos les gusta Flutter'
+        'male': 'A él le gusta Jaspr',
+        'female': 'A ella le gusta Jaspr',
+        'other': 'A ellos les gusta Jaspr'
       },
       name: 'genderMessage',
     )}';
@@ -761,17 +798,27 @@ class _AppL10nEs extends AppL10n {
 
   @override
   String lastUpdated(DateTime date) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMd(localeName);
     
-    
-    return 'Última actualización: ${date}';
+    return 'Última actualización: ${dateFormatter.format(date)}';
   }
 
 
   @override
   String timeRemaining(DateTime time) {
+        final intl.DateFormat timeFormatter = intl.DateFormat.Hm(localeName);
     
+    return 'Tiempo restante: ${timeFormatter.format(time)}';
+  }
+
+
+  @override
+  String activityDetailsDateSameDayWithTime(DateTime date, DateTime startTime, DateTime endTime) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMMMMEEEEd(localeName);
+        final intl.DateFormat startTimeFormatter = intl.DateFormat.jm(localeName);
+        final intl.DateFormat endTimeFormatter = intl.DateFormat.jm(localeName);
     
-    return 'Tiempo restante: ${time}';
+    return '${dateFormatter.format(date)}: ${startTimeFormatter.format(startTime)} to ${endTimeFormatter.format(endTime)}';
   }
 
 
@@ -848,9 +895,9 @@ class _AppL10nFr extends AppL10n {
     return '${intl.Intl.select(
       gender,
       {
-        'male': 'Il aime Flutter',
-        'female': 'Elle aime Flutter',
-        'other': 'Ils aiment Flutter'
+        'male': 'Il aime Jaspr',
+        'female': 'Elle aime Jaspr',
+        'other': 'Ils aiment Jaspr'
       },
       name: 'genderMessage',
     )}';
@@ -892,17 +939,27 @@ class _AppL10nFr extends AppL10n {
 
   @override
   String lastUpdated(DateTime date) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMd(localeName);
     
-    
-    return 'Dernière mise à jour: ${date}';
+    return 'Dernière mise à jour: ${dateFormatter.format(date)}';
   }
 
 
   @override
   String timeRemaining(DateTime time) {
+        final intl.DateFormat timeFormatter = intl.DateFormat.Hm(localeName);
     
+    return 'Temps restant: ${timeFormatter.format(time)}';
+  }
+
+
+  @override
+  String activityDetailsDateSameDayWithTime(DateTime date, DateTime startTime, DateTime endTime) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMMMMEEEEd(localeName);
+        final intl.DateFormat startTimeFormatter = intl.DateFormat.jm(localeName);
+        final intl.DateFormat endTimeFormatter = intl.DateFormat.jm(localeName);
     
-    return 'Temps restant: ${time}';
+    return '${dateFormatter.format(date)}: ${startTimeFormatter.format(startTime)} to ${endTimeFormatter.format(endTime)}';
   }
 
 
@@ -981,9 +1038,9 @@ class _AppL10nPl extends AppL10n {
     return '${intl.Intl.select(
       gender,
       {
-        'male': 'On lubi Flutter',
-        'female': 'Ona lubi Flutter',
-        'other': 'Oni lubią Flutter'
+        'male': 'On lubi Jaspr',
+        'female': 'Ona lubi Jaspr',
+        'other': 'Oni lubią Jaspr'
       },
       name: 'genderMessage',
     )}';
@@ -1025,17 +1082,27 @@ class _AppL10nPl extends AppL10n {
 
   @override
   String lastUpdated(DateTime date) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMd(localeName);
     
-    
-    return 'Ostatnia aktualizacja: ${date}';
+    return 'Ostatnia aktualizacja: ${dateFormatter.format(date)}';
   }
 
 
   @override
   String timeRemaining(DateTime time) {
+        final intl.DateFormat timeFormatter = intl.DateFormat.Hm(localeName);
     
+    return 'Pozostały czas: ${timeFormatter.format(time)}';
+  }
+
+
+  @override
+  String activityDetailsDateSameDayWithTime(DateTime date, DateTime startTime, DateTime endTime) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMMMMEEEEd(localeName);
+        final intl.DateFormat startTimeFormatter = intl.DateFormat.jm(localeName);
+        final intl.DateFormat endTimeFormatter = intl.DateFormat.jm(localeName);
     
-    return 'Pozostały czas: ${time}';
+    return '${dateFormatter.format(date)}: ${startTimeFormatter.format(startTime)} to ${endTimeFormatter.format(endTime)}';
   }
 
 
@@ -1113,9 +1180,9 @@ class _AppL10nSk extends AppL10n {
     return '${intl.Intl.select(
       gender,
       {
-        'male': 'Má rád Flutter',
-        'female': 'Má rada Flutter',
-        'other': 'Majú radi Flutter'
+        'male': 'Má rád Jaspr',
+        'female': 'Má rada Jaspr',
+        'other': 'Majú radi Jaspr'
       },
       name: 'genderMessage',
     )}';
@@ -1157,17 +1224,27 @@ class _AppL10nSk extends AppL10n {
 
   @override
   String lastUpdated(DateTime date) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMd(localeName);
     
-    
-    return 'Naposledy aktualizované: ${date}';
+    return 'Naposledy aktualizované: ${dateFormatter.format(date)}';
   }
 
 
   @override
   String timeRemaining(DateTime time) {
+        final intl.DateFormat timeFormatter = intl.DateFormat.Hm(localeName);
     
+    return 'Zostávajúci čas: ${timeFormatter.format(time)}';
+  }
+
+
+  @override
+  String activityDetailsDateSameDayWithTime(DateTime date, DateTime startTime, DateTime endTime) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMMMMEEEEd(localeName);
+        final intl.DateFormat startTimeFormatter = intl.DateFormat.jm(localeName);
+        final intl.DateFormat endTimeFormatter = intl.DateFormat.jm(localeName);
     
-    return 'Zostávajúci čas: ${time}';
+    return '${dateFormatter.format(date)}: ${startTimeFormatter.format(startTime)} to ${endTimeFormatter.format(endTime)}';
   }
 
 
@@ -1243,9 +1320,9 @@ class _AppL10nZh extends AppL10n {
     return '${intl.Intl.select(
       gender,
       {
-        'male': '他喜欢Flutter',
-        'female': '她喜欢Flutter',
-        'other': '他们喜欢Flutter'
+        'male': '他喜欢Jaspr',
+        'female': '她喜欢Jaspr',
+        'other': '他们喜欢Jaspr'
       },
       name: 'genderMessage',
     )}';
@@ -1287,17 +1364,27 @@ class _AppL10nZh extends AppL10n {
 
   @override
   String lastUpdated(DateTime date) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMd(localeName);
     
-    
-    return '最后更新: ${date}';
+    return '最后更新: ${dateFormatter.format(date)}';
   }
 
 
   @override
   String timeRemaining(DateTime time) {
+        final intl.DateFormat timeFormatter = intl.DateFormat.Hm(localeName);
     
+    return '剩余时间: ${timeFormatter.format(time)}';
+  }
+
+
+  @override
+  String activityDetailsDateSameDayWithTime(DateTime date, DateTime startTime, DateTime endTime) {
+        final intl.DateFormat dateFormatter = intl.DateFormat.yMMMMEEEEd(localeName);
+        final intl.DateFormat startTimeFormatter = intl.DateFormat.jm(localeName);
+        final intl.DateFormat endTimeFormatter = intl.DateFormat.jm(localeName);
     
-    return '剩余时间: ${time}';
+    return '${dateFormatter.format(date)}: ${startTimeFormatter.format(startTime)} to ${endTimeFormatter.format(endTime)}';
   }
 
 

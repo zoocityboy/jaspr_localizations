@@ -78,7 +78,7 @@
     }
   },
   
-  "genderMessage": "{gender, select, male{他喜欢Flutter} female{她喜欢Flutter} other{他们喜欢Flutter}}",
+  "genderMessage": "{gender, select, male{他喜欢Jaspr} female{她喜欢Jaspr} other{他们喜欢Jaspr}}",
   "@genderMessage": {
     "description": "根据性别显示不同的消息",
     "context": "ui:dynamic_content",
@@ -171,6 +171,27 @@
         "type": "DateTime",
         "format": "Hm",
         "example": "14:30"
+      }
+    }
+  },
+  "activityDetailsDateSameDayWithTime": "{date}: {startTime} to {endTime}",
+  "@activityDetailsDateSameDayWithTime": {
+    "description": "Label for activity details when the date is the same day and start time is different from end time",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "example": "2026年4月27日",
+        "format": "yMMMMEEEEd"
+      },
+      "startTime": {
+        "type": "DateTime",
+        "example": "上午9:00",
+        "format": "jm"
+      },
+      "endTime": {
+        "type": "DateTime",
+        "example": "下午5:00",
+        "format": "jm"
       }
     }
   }

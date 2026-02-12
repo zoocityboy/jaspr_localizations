@@ -1,4 +1,5 @@
 import 'package:jaspr/jaspr.dart';
+import '../utils/locale_data_initializer.dart';
 import 'package:jaspr_localizations/src/base/locale.dart';
 import 'package:jaspr_localizations/src/base/locale_change_notifier.dart';
 import 'package:jaspr_localizations/src/base/localizations_delegate.dart';
@@ -77,6 +78,7 @@ class JasprLocalizations extends StatefulComponent {
 class _JasprLocalizationsState extends State<JasprLocalizations> {
   /// The controller that manages the current locale state.
   late LocaleChangeNotifier _controller;
+  var _localeDataInitialized = false;
 
   /// Called when the locale changes in the controller.
   ///
@@ -95,9 +97,33 @@ class _JasprLocalizationsState extends State<JasprLocalizations> {
       supportedLocales: component.supportedLocales,
     );
 
+    // Initialize Intl date formatting data for the supported locales.
+    // On the web, the browser provides Intl data so we don't need to load
+    // it. On server-side rendering, initialize for all supported locales
+    // (cached) to avoid LocaleDataException when DateFormat is used.
+    LocaleDataInitializer.initializeForLocales(
+          component.supportedLocales.map((l) => l.toLanguageTag()),
+        )
+        .then((_) {
+          _localeDataInitialized = true;
+          if (kIsWeb) {
+            setState(() {});
+          }
+          
+        })
+        .catchError((e) {
+          _localeDataInitialized = true;
+          if (kIsWeb) {
+            
+            setState(() {});
+          
+          }
+        });
     // Listen for locale changes
     _controller.addListener(_onLocaleChanged);
   }
+
+  // Initialization now handled via LocaleDataInitializer
 
   @override
   void dispose() {

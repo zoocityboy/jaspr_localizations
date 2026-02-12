@@ -3,7 +3,6 @@
   "@@context": "Localisation d'application pour l'exemple du framework Jaspr",
   "@@author": "Jaspr Localization Team",
   "@@comment": "Traductions françaises pour l'application d'exemple de localisation Jaspr",
-  
   "appTitle": "Mon Application",
   "@appTitle": {
     "description": "Le titre de l'application affiché dans l'en-tête",
@@ -31,7 +30,6 @@
       }
     }
   },
-  
   "itemCount": "{count, plural, =0{Aucun élément} =1{Un élément} other{{count} éléments}}",
   "@itemCount": {
     "description": "Affiche le nombre d'éléments avec prise en charge appropriée du pluriel",
@@ -44,7 +42,6 @@
       }
     }
   },
-  
   "languageSwitcher": "Sélecteur de langue",
   "@languageSwitcher": {
     "description": "Header for the language selector section",
@@ -60,13 +57,11 @@
     "description": "Texte pour le bouton de connexion",
     "context": "ui:button:auth"
   },
-  
-  "logoutButton": "Se déconnecter", 
+  "logoutButton": "Se déconnecter",
   "@logoutButton": {
     "description": "Texte pour le bouton de déconnexion",
     "context": "ui:button:auth"
   },
-  
   "currentLocale": "Langue actuelle: {locale}",
   "@currentLocale": {
     "description": "Affiche le paramètre de langue actuel",
@@ -79,8 +74,7 @@
       }
     }
   },
-  
-  "genderMessage": "{gender, select, male{Il aime Flutter} female{Elle aime Flutter} other{Ils aiment Flutter}}",
+  "genderMessage": "{gender, select, male{Il aime Jaspr} female{Elle aime Jaspr} other{Ils aiment Jaspr}}",
   "@genderMessage": {
     "description": "Message spécifique au genre démontrant le format ICU select",
     "context": "example:icu",
@@ -92,7 +86,6 @@
       }
     }
   },
-  
   "priceDisplay": "Prix: {amount}",
   "@priceDisplay": {
     "description": "Afficher le prix avec formatage de devise",
@@ -106,20 +99,18 @@
       }
     }
   },
-  
   "downloadCount": "Téléchargements: {count}",
   "@downloadCount": {
     "description": "Afficher le nombre de téléchargements avec formatage de nombre",
     "context": "ui:stats",
     "placeholders": {
       "count": {
-        "type": "String", 
+        "type": "String",
         "example": "1,234",
         "description": "Le nombre formaté de téléchargements"
       }
     }
   },
-  
   "percentageValue": "Progrès: {value}%",
   "@percentageValue": {
     "description": "Afficher la valeur en pourcentage avec formatage approprié",
@@ -132,7 +123,6 @@
       }
     }
   },
-  
   "salesReport": "Ventes: {amount} ({count} unités) - {percent}% croissance",
   "@salesReport": {
     "description": "Rapport de ventes complexe avec plusieurs types de formatage",
@@ -157,7 +147,6 @@
       }
     }
   },
-  
   "lastUpdated": "Dernière mise à jour: {date}",
   "@lastUpdated": {
     "description": "Affiche quand les données ont été mises à jour pour la dernière fois",
@@ -171,7 +160,6 @@
       }
     }
   },
-  
   "timeRemaining": "Temps restant: {time}",
   "@timeRemaining": {
     "description": "Afficher le temps restant en heures et minutes",
@@ -182,6 +170,27 @@
         "format": "Hm",
         "example": "2023-10-15T14:30:00Z",
         "description": "Temps restant"
+      }
+    }
+  },
+  "activityDetailsDateSameDayWithTime": "{date}: {startTime} to {endTime}",
+  "@activityDetailsDateSameDayWithTime": {
+    "description": "Label for activity details when the date is the same day and start time is different from end time",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "example": "27 avril 2026",
+        "format": "yMMMMEEEEd"
+      },
+      "startTime": {
+        "type": "DateTime",
+        "example": "09:00",
+        "format": "jm"
+      },
+      "endTime": {
+        "type": "DateTime",
+        "example": "17:00",
+        "format": "jm"
       }
     }
   }

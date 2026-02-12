@@ -60,7 +60,8 @@
 /// import 'package:jaspr/jaspr.dart';
 /// import 'package:jaspr_localizations/jaspr_localizations.dart';
 /// import 'package:example/generated/l10n.dart';
-///
+/// 
+/// @client
 /// class App extends StatelessComponent {
 ///   @override
 ///   Component build(BuildContext context) {

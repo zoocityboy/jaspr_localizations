@@ -514,8 +514,12 @@ class Message {
             placeholder.isDateTime = true;
           } else {
             // Here the node type must be ST.placeholderExpr.
-            // A DateTime placeholder must require date formatting.
+            // If the placeholder has type 'DateTime', treat it as a
+            // DateTime placeholder and require date formatting. Marking
+            // `isDateTime` ensures the generator emits DateFormat
+            // constructors and formatter usage for this placeholder.
             if (placeholder.type == 'DateTime') {
+              placeholder.isDateTime = true;
               placeholder.requiresDateFormatting = true;
             }
           }

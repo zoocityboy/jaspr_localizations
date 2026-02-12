@@ -81,7 +81,7 @@
     }
   },
   
-  "genderMessage": "{gender, select, male{A él le gusta Flutter} female{A ella le gusta Flutter} other{A ellos les gusta Flutter}}",
+  "genderMessage": "{gender, select, male{A él le gusta Jaspr} female{A ella le gusta Jaspr} other{A ellos les gusta Jaspr}}",
   "@genderMessage": {
     "description": "Mensaje específico de género que demuestra el formato ICU select",
     "context": "example:icu",
@@ -183,6 +183,27 @@
         "format": "Hm",
         "example": "2023-10-15T14:30:00Z",
         "description": "Tiempo restante"
+      }
+    }
+  },
+  "activityDetailsDateSameDayWithTime": "{date}: {startTime} to {endTime}",
+  "@activityDetailsDateSameDayWithTime": {
+    "description": "Label for activity details when the date is the same day and start time is different from end time",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "example": "27 de abril de 2026",
+        "format": "yMMMMEEEEd"
+      },
+      "startTime": {
+        "type": "DateTime",
+        "example": "9:00 AM",
+        "format": "jm"
+      },
+      "endTime": {
+        "type": "DateTime",
+        "example": "5:00 PM",
+        "format": "jm"
       }
     }
   }

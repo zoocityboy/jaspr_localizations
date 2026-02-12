@@ -68,6 +68,22 @@ class LanguageComponent extends StatelessComponent {
           p([Component.text('Login: ${l10n.loginButton}')]),
           p([Component.text('Logout: ${l10n.logoutButton}')]),
           p([Component.text('Locale: ${currentLocale.toLanguageTag()}')]),
+          // Horizontal row: use `space-x-2` for horizontal spacing between children
+          div(classes: 'space-x-2 flex flex-row', [
+            p([Component.text('Male: ${l10n.genderMessage('male')}')]),
+            p([Component.text('Female: ${l10n.genderMessage('female')}')]),
+          ]),
+          p([Component.text('Other: ${l10n.lastUpdated(DateTime.now())}')]),
+          p([
+            Component.text(
+              'Activity details: ${l10n.activityDetailsDateSameDayWithTime(DateTime.now(), DateTime.now().subtract(Duration(hours: -2)), DateTime.now().subtract(Duration(hours: 3)))}',
+            ),
+          ]),
+          p([
+            Component.text(
+              'Plurals: ${l10n.itemCount(0)} | ${l10n.itemCount(2)} | ${l10n.itemCount(5)}',
+            ),
+          ]),
         ]),
       ]),
     ]);
@@ -98,6 +114,14 @@ class LanguageComponent extends StatelessComponent {
     ]),
     css('.space-y-2 > * + *', [
       css('&').styles(margin: Margin.only(top: 0.5.rem)),
+    ]),
+    // Horizontal spacing utility similar to Tailwind's `space-x-*`.
+    css('.space-x-2 > * + *', [
+      css('&').styles(margin: Margin.only(left: 0.5.rem)),
+    ]),
+    // Utility to explicitly set flex direction to row when needed.
+    css('.flex-row', [
+      css('&').styles(flexDirection: FlexDirection.row),
     ]),
     css('.font-bold', [
       css('&').styles(fontWeight: FontWeight.bold),
