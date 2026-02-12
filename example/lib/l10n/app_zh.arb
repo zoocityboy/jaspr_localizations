@@ -9,7 +9,17 @@
     "description": "显示在标题栏中的应用程序标题",
     "context": "ui:header"
   },
-  
+
+  "welcome": "欢迎",
+  "@welcome": {
+    "description": "Welcome header on the home page",
+    "context": "ui:home:header"
+  },
+  "successCreation": "您已成功使用 jaspr_localizations 创建了一个新的 Jaspr 站点。",
+  "@successCreation": {
+    "description": "Success message displayed on home page showing creation status",
+    "context": "ui:home:content"
+  },
   "welcomeMessage": "欢迎使用 {appName}！",
   "@welcomeMessage": {
     "description": "向用户显示的欢迎信息",
@@ -34,6 +44,16 @@
     }
   },
   
+  "languageSwitcher": "语言切换器",
+  "@languageSwitcher": {
+    "description": "Header for the language selector section",
+    "context": "ui:settings"
+  },
+  "currentLabel": " (当前)",
+  "@currentLabel": {
+    "description": "Label indicating the currently selected option",
+    "context": "ui:status"
+  },
   "loginButton": "登录",
   "@loginButton": {
     "description": "登录按钮文本",

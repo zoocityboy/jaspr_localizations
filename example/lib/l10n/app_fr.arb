@@ -9,7 +9,16 @@
     "description": "Le titre de l'application affiché dans l'en-tête",
     "context": "ui:header"
   },
-  
+  "welcome": "Bienvenue",
+  "@welcome": {
+    "description": "Welcome header on the home page",
+    "context": "ui:home:header"
+  },
+  "successCreation": "Vous avez créé avec succès un nouveau site Jaspr avec jaspr_localizations.",
+  "@successCreation": {
+    "description": "Success message displayed on home page showing creation status",
+    "context": "ui:home:content"
+  },
   "welcomeMessage": "Bienvenue sur {appName}!",
   "@welcomeMessage": {
     "description": "Message de bienvenue affiché aux utilisateurs lorsqu'ils ouvrent l'application",
@@ -36,6 +45,16 @@
     }
   },
   
+  "languageSwitcher": "Sélecteur de langue",
+  "@languageSwitcher": {
+    "description": "Header for the language selector section",
+    "context": "ui:settings"
+  },
+  "currentLabel": " (actuel)",
+  "@currentLabel": {
+    "description": "Label indicating the currently selected option",
+    "context": "ui:status"
+  },
   "loginButton": "Se connecter",
   "@loginButton": {
     "description": "Texte pour le bouton de connexion",

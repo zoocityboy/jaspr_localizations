@@ -3,15 +3,15 @@ import 'package:jaspr_localizations/src/base/locale.dart';
 import 'package:jaspr_localizations/src/base/locale_change_notifier.dart';
 import 'package:jaspr_localizations/src/jaspr_l10n_core.dart';
 
-/// A builder component that rebuilds when the locale changes
+/// A component that rebuilds its child when the locale changes.
 class JasprLocaleBuilder extends StatefulComponent {
-  /// Creates a LocaleBuilder that rebuilds when locale changes
+  /// Creates a [JasprLocaleBuilder].
   const JasprLocaleBuilder({required this.builder, this.controller, super.key});
 
-  /// The builder function that creates the component
-  final Component Function(BuildContext context, Locale locale) builder;
+  /// The builder function.
+  final Component Function(BuildContext, Locale) builder;
 
-  /// Optional controller to listen to. If not provided, uses the one from context
+  /// Optional controller. If null, looks up the provider in the context.
   final LocaleChangeNotifier? controller;
 
   @override

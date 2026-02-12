@@ -1,4 +1,4 @@
-import 'package:jaspr/jaspr.dart';
+import 'package:jaspr/dom.dart';
 import 'package:jaspr_localizations/jaspr_localizations.dart';
 import 'package:test/test.dart';
 

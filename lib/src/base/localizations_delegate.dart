@@ -1,19 +1,15 @@
 import 'package:jaspr_localizations/src/base/locale.dart';
 
-/// Localization delegate base class for Jaspr applications
+/// A delegate for loading localized resources.
 ///
-/// This is a simplified version of Flutter's LocalizationsDelegate, adapted for Jaspr.
-/// It defines how to load localized resources for a specific type.
+/// Implementations define how to load specific localizations (e.g., generated [L10n] classes)
+/// for a supported locale.
 abstract class LocalizationsDelegate<T> {
   const LocalizationsDelegate();
 
-  /// Whether this delegate supports the given locale.
+  /// Whether resources for the [locale] are supported by this delegate.
   bool isSupported(Locale locale);
 
-  /// Load the localizations for the given locale.
-  ///
-  /// This method is called when the system locale changes or when the app
-  /// starts up. It should return a Future that completes with the localized
-  /// resources for the given locale.
+  /// Loads the resources for the [locale].
   Future<T> load(Locale locale);
 }

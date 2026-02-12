@@ -73,18 +73,23 @@ String getCurrentLanguageCode() {
 /// Returns a language code string (e.g., 'en-US', 'fr-FR').
 String _getBrowserLanguage() {
   try {
+    // 1. Check HTML lang attribute (SSR hydration consistency)
+    final htmlLang = web.document.documentElement?.getAttribute('lang');
+    if (htmlLang != null && htmlLang.isNotEmpty) {
+      return htmlLang;
+    }
+
     final navigator = web.window.navigator;
 
-    // Try to get the primary language
+    // 2. Try to get the primary language
     final language = navigator.language;
     if (language.isNotEmpty) {
       return language;
     }
 
-    // Try to get from languages array
+    // 3. Try to get from languages array
     final languages = navigator.languages;
     if (languages.length > 0) {
-      // Convert JSString to Dart String
       return languages[0].toString();
     }
   } catch (e) {

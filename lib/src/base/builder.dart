@@ -5,6 +5,7 @@ import 'package:build/build.dart';
 import 'package:path/path.dart' as path;
 
 import 'file_system.dart';
+import 'local_file_system.dart';
 import 'logger.dart';
 import '../jaspr_l10n_generator.dart';
 import 'l10n_config.dart';
@@ -13,9 +14,10 @@ import '../utils/localizations_utils.dart';
 /// Builder for generating Jaspr localization files from ARB files
 /// Now uses Flutter-aligned localization system
 class JasprLocalizationBuilder implements Builder {
-  JasprLocalizationBuilder(this._buildExtensions);
+  JasprLocalizationBuilder(this._buildExtensions, this.config);
 
   final Map<String, List<String>> _buildExtensions;
+  final L10nConfig config;
 
   @override
   Map<String, List<String>> get buildExtensions => _buildExtensions;
@@ -25,9 +27,7 @@ class JasprLocalizationBuilder implements Builder {
     final logger = ConsoleLogger();
     final fileSystem = LocalJasprFileSystem();
 
-    // Load configuration from l10n.yaml or pubspec.yaml
-    final config = L10nConfig.load('.', fileSystem, logger);
-    logger.printStatus('Loaded configuration: $config');
+    logger.printStatus('Using configuration: $config');
 
     // For template ARB path, we need lib-relative path
     final arbDirPath = config.arbDir.startsWith('lib/')
@@ -102,7 +102,12 @@ Builder jasprLocalizationsBuilder(BuilderOptions options) {
   // Load configuration to determine output path
   final logger = ConsoleLogger();
   final fileSystem = LocalJasprFileSystem();
-  final config = L10nConfig.load('.', fileSystem, logger);
+  final config = L10nConfig.load(
+    '.',
+    fileSystem,
+    logger,
+    options: options.config,
+  );
 
   // Extract the output path relative to lib/
   // If config specifies 'lib/generated/l10n.dart', we need 'generated/l10n.dart'
@@ -117,5 +122,5 @@ Builder jasprLocalizationsBuilder(BuilderOptions options) {
 
   logger.printStatus('Build extensions configured: $buildExtensions');
 
-  return JasprLocalizationBuilder(buildExtensions);
+  return JasprLocalizationBuilder(buildExtensions, config);
 }

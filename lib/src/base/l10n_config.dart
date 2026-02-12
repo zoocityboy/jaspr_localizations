@@ -81,6 +81,34 @@ class L10nConfig {
   /// File to write untranslated messages to
   final String? untranslatedMessagesFile;
 
+  /// Load configuration from a map (e.g. from l10n.yaml or build.yaml)
+  static L10nConfig fromMap(Map<dynamic, dynamic> map) {
+    return L10nConfig(
+      arbDir: map['arb-dir'] as String? ?? 'lib/l10n',
+      templateArbFile: map['template-arb-file'] as String? ?? 'app_en.arb',
+      outputLocalizationFile:
+          map['output-localization-file'] as String? ??
+          'app_localizations.dart',
+      outputClass: map['output-class'] as String? ?? 'AppLocalizations',
+      preferredSupportedLocales: (map['preferred-supported-locales'] as List?)
+          ?.map((e) => e.toString())
+          .toList(),
+      header: map['header'] as String?,
+      headerFile: map['header-file'] as String?,
+      useDeferredLoading: map['use-deferred-loading'] as bool? ?? false,
+      useRelaxedSyntax: map['use-relaxed-syntax'] as bool? ?? false,
+      useSyntheticPackage: map['synthetic-package'] as bool? ?? true,
+      useEscaping: map['use-escaping'] as bool? ?? false,
+      suppressWarnings: map['suppress-warnings'] as bool? ?? false,
+      useNamedParameters: map['use-named-parameters'] as bool? ?? false,
+      nullableGetter: map['nullable-getter'] as bool? ?? true,
+      useFormat: map['format'] as bool? ?? true,
+      requiredResourceAttributes:
+          map['required-resource-attributes'] as bool? ?? false,
+      untranslatedMessagesFile: map['untranslated-messages-file'] as String?,
+    );
+  }
+
   /// Load configuration from l10n.yaml file
   static L10nConfig? fromL10nYaml(
     String projectRoot,
@@ -98,34 +126,7 @@ class L10nConfig {
     try {
       final yamlString = l10nFile.readAsStringSync();
       final yamlMap = loadYaml(yamlString) as YamlMap;
-
-      return L10nConfig(
-        arbDir: yamlMap['arb-dir'] as String? ?? 'lib/l10n',
-        templateArbFile:
-            yamlMap['template-arb-file'] as String? ?? 'app_en.arb',
-        outputLocalizationFile:
-            yamlMap['output-localization-file'] as String? ??
-            'app_localizations.dart',
-        outputClass: yamlMap['output-class'] as String? ?? 'AppLocalizations',
-        preferredSupportedLocales:
-            (yamlMap['preferred-supported-locales'] as YamlList?)
-                ?.map((e) => e.toString())
-                .toList(),
-        header: yamlMap['header'] as String?,
-        headerFile: yamlMap['header-file'] as String?,
-        useDeferredLoading: yamlMap['use-deferred-loading'] as bool? ?? false,
-        useRelaxedSyntax: yamlMap['use-relaxed-syntax'] as bool? ?? false,
-        useSyntheticPackage: yamlMap['synthetic-package'] as bool? ?? true,
-        useEscaping: yamlMap['use-escaping'] as bool? ?? false,
-        suppressWarnings: yamlMap['suppress-warnings'] as bool? ?? false,
-        useNamedParameters: yamlMap['use-named-parameters'] as bool? ?? false,
-        nullableGetter: yamlMap['nullable-getter'] as bool? ?? true,
-        useFormat: yamlMap['format'] as bool? ?? true,
-        requiredResourceAttributes:
-            yamlMap['required-resource-attributes'] as bool? ?? false,
-        untranslatedMessagesFile:
-            yamlMap['untranslated-messages-file'] as String?,
-      );
+      return fromMap(yamlMap);
     } catch (e) {
       logger.printError('Error parsing l10n.yaml: $e');
       return null;
@@ -156,39 +157,7 @@ class L10nConfig {
         return null;
       }
 
-      return L10nConfig(
-        arbDir: jasprL10nConfig['arb-dir'] as String? ?? 'lib/l10n',
-        templateArbFile:
-            jasprL10nConfig['template-arb-file'] as String? ?? 'app_en.arb',
-        outputLocalizationFile:
-            jasprL10nConfig['output-localization-file'] as String? ??
-            'app_localizations.dart',
-        outputClass:
-            jasprL10nConfig['output-class'] as String? ?? 'AppLocalizations',
-        preferredSupportedLocales:
-            (jasprL10nConfig['preferred-supported-locales'] as YamlList?)
-                ?.map((e) => e.toString())
-                .toList(),
-        header: jasprL10nConfig['header'] as String?,
-        headerFile: jasprL10nConfig['header-file'] as String?,
-        useDeferredLoading:
-            jasprL10nConfig['use-deferred-loading'] as bool? ?? false,
-        useRelaxedSyntax:
-            jasprL10nConfig['use-relaxed-syntax'] as bool? ?? false,
-        useSyntheticPackage:
-            jasprL10nConfig['synthetic-package'] as bool? ?? true,
-        useEscaping: jasprL10nConfig['use-escaping'] as bool? ?? false,
-        suppressWarnings:
-            jasprL10nConfig['suppress-warnings'] as bool? ?? false,
-        useNamedParameters:
-            jasprL10nConfig['use-named-parameters'] as bool? ?? false,
-        nullableGetter: jasprL10nConfig['nullable-getter'] as bool? ?? true,
-        useFormat: jasprL10nConfig['format'] as bool? ?? true,
-        requiredResourceAttributes:
-            jasprL10nConfig['required-resource-attributes'] as bool? ?? false,
-        untranslatedMessagesFile:
-            jasprL10nConfig['untranslated-messages-file'] as String?,
-      );
+      return fromMap(jasprL10nConfig);
     } catch (e) {
       logger.printError(
         'Error parsing pubspec.yaml jaspr_localizations section: $e',
@@ -198,14 +167,24 @@ class L10nConfig {
   }
 
   /// Load configuration with fallback chain:
-  /// 1. Try l10n.yaml first (Flutter standard)
-  /// 2. Fall back to pubspec.yaml jaspr_localizations section
-  /// 3. Use defaults if neither exists
+  /// 1. Try builder options first
+  /// 2. Try l10n.yaml (Flutter standard)
+  /// 3. Fall back to pubspec.yaml jaspr_localizations section
+  /// 4. Use defaults if neither exists
   static L10nConfig load(
     String projectRoot,
     JasprFileSystem fileSystem,
-    Logger logger,
-  ) {
+    Logger logger, {
+    Map<String, dynamic>? options,
+  }) {
+    // Try builder options first
+    if (options != null && options.isNotEmpty) {
+      logger.printStatus('Using configuration from builder options');
+      // Merge with defaults logic inside fromMap or similar?
+      // fromMap handles defaults for missing keys.
+      return fromMap(options);
+    }
+
     // Try l10n.yaml first (preferred, follows Flutter conventions)
     final l10nConfig = fromL10nYaml(projectRoot, fileSystem, logger);
     if (l10nConfig != null) {

@@ -9,7 +9,17 @@
     "description": "The title of the application displayed in the header",
     "context": "ui:header"
   },
-  
+
+  "welcome": "Vitajte",
+  "@welcome": {
+    "description": "Welcome header on the home page",
+    "context": "ui:home:header"
+  },
+  "successCreation": "Úspešne ste vytvorili novú stránku Jaspr s jaspr_localizations.",
+  "@successCreation": {
+    "description": "Success message displayed on home page showing creation status",
+    "context": "ui:home:content"
+  },
   "welcomeMessage": "Vitajte v aplikácii {appName}!",
   "@welcomeMessage": {
     "description": "Welcome message shown to users when they open the application",
@@ -36,6 +46,16 @@
     }
   },
   
+  "languageSwitcher": "Prepínač jazykov",
+  "@languageSwitcher": {
+    "description": "Header for the language selector section",
+    "context": "ui:settings"
+  },
+  "currentLabel": " (aktuálny)",
+  "@currentLabel": {
+    "description": "Label indicating the currently selected option",
+    "context": "ui:status"
+  },
   "loginButton": "Prihlásiť sa",
   "@loginButton": {
     "description": "Text for the login button",

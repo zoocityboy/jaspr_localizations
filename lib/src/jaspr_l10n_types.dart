@@ -264,6 +264,11 @@ class Message {
          resourceId,
          isResourceAttributeRequired,
        ),
+       context = _context(
+         templateBundle.resources,
+         resourceId,
+         isResourceAttributeRequired,
+       ),
        templatePlaceholders = _placeholders(
          templateBundle.resources,
          resourceId,
@@ -316,6 +321,7 @@ class Message {
   final String resourceId;
   final String value;
   final String? description;
+  final String? context;
   late final Map<LocaleInfo, String?> messages;
   final Map<LocaleInfo, Node?> parsedMessages;
   final Map<LocaleInfo, Map<String, Placeholder>> localePlaceholders;
@@ -395,6 +401,32 @@ class Message {
     if (value is! String) {
       throw JasprL10nException(
         'The description for "@$resourceId" is not a properly formatted String.',
+      );
+    }
+    return value;
+  }
+
+  static String? _context(
+    Map<String, Object?> bundle,
+    String resourceId,
+    bool isResourceAttributeRequired,
+  ) {
+    final Map<String, Object?>? resourceAttributes = _attributes(
+      bundle,
+      resourceId,
+      isResourceAttributeRequired,
+    );
+    if (resourceAttributes == null) {
+      return null;
+    }
+
+    final Object? value = resourceAttributes['context'];
+    if (value == null) {
+      return null;
+    }
+    if (value is! String) {
+      throw JasprL10nException(
+        'The context for "@$resourceId" is not a properly formatted String.',
       );
     }
     return value;

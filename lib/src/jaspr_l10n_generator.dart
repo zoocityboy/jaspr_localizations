@@ -6,7 +6,6 @@
 // Based on Flutter's gen_l10n.dart but adapted for Jaspr framework
 
 import 'dart:io';
-
 import 'base/file_system.dart';
 import 'base/logger.dart';
 import 'jaspr_l10n_templates.dart';
@@ -376,9 +375,16 @@ class LocalizationsGenerator {
   String _generateBaseClassMethods() {
     final StringBuffer sb = StringBuffer();
     for (final Message message in allMessages) {
+      String comment =
+          message.description ?? 'No description provided for @{methodName}.';
+      if (message.context != null) {
+        comment = '$comment\n  ///\n  /// context: ${message.context}';
+      }
+
       if (message.templatePlaceholders.isEmpty) {
         sb.writeln(
           baseClassGetterTemplate
+              .replaceAll('@{comment}', comment)
               .replaceAll('@{methodName}', message.resourceId)
               .replaceAll('@{localeVar}', templateBundle.locale.toString())
               .replaceAll('@{message}', message.value),
@@ -392,6 +398,7 @@ class LocalizationsGenerator {
 
         sb.writeln(
           baseClassMethodTemplate
+              .replaceAll('@{comment}', comment)
               .replaceAll('@{methodName}', message.resourceId)
               .replaceAll('@{methodParameters}', methodParameters)
               .replaceAll('@{localeVar}', templateBundle.locale.toString())
@@ -414,7 +421,7 @@ class LocalizationsGenerator {
     final StringBuffer sb = StringBuffer();
     for (final LocaleInfo locale in supportedLocales) {
       final String className =
-          '$classNameString${_camelCase(locale.toString())}';
+          '_$classNameString${_camelCase(locale.toString())}';
       sb.writeln(
         jasprFromSwitchCaseTemplate
             .replaceAll('@{locale}', locale.toString())
@@ -483,7 +490,7 @@ class LocalizationsGenerator {
     // Generate individual locale classes
     for (final LocaleInfo locale in supportedLocales) {
       final String className =
-          '$classNameString${_camelCase(locale.toString())}';
+          '_$classNameString${_camelCase(locale.toString())}';
       final String classContent = jasprFileTemplate
           .replaceAll('@{locale}', locale.toString())
           .replaceAll('@{class}', className)
