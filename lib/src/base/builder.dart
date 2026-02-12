@@ -4,7 +4,7 @@ library;
 import 'package:build/build.dart';
 import 'package:path/path.dart' as path;
 
-import 'file_system.dart';
+import 'local_file_system.dart';
 import 'logger.dart';
 import '../jaspr_l10n_generator.dart';
 import 'l10n_config.dart';
@@ -13,9 +13,10 @@ import '../utils/localizations_utils.dart';
 /// Builder for generating Jaspr localization files from ARB files
 /// Now uses Flutter-aligned localization system
 class JasprLocalizationBuilder implements Builder {
-  JasprLocalizationBuilder(this._buildExtensions);
+  JasprLocalizationBuilder(this._buildExtensions, this.config);
 
   final Map<String, List<String>> _buildExtensions;
+  final L10nConfig config;
 
   @override
   Map<String, List<String>> get buildExtensions => _buildExtensions;
@@ -25,12 +26,12 @@ class JasprLocalizationBuilder implements Builder {
     final logger = ConsoleLogger();
     final fileSystem = LocalJasprFileSystem();
 
-    // Load configuration from l10n.yaml or pubspec.yaml
-    final config = L10nConfig.load('.', fileSystem, logger);
-    logger.printStatus('Loaded configuration: $config');
+    logger.printStatus('Using configuration: $config');
 
     // For template ARB path, we need lib-relative path
-    final arbDirPath = config.arbDir.startsWith('lib/') ? config.arbDir : path.join('lib', config.arbDir);
+    final arbDirPath = config.arbDir.startsWith('lib/')
+        ? config.arbDir
+        : path.join('lib', config.arbDir);
     final templateArbPath = path.join(arbDirPath, config.templateArbFile);
 
     // Output directory and file from config
@@ -41,8 +42,11 @@ class JasprLocalizationBuilder implements Builder {
 
     // Parse preferred supported locales if specified
     List<LocaleInfo>? preferredLocales;
-    if (config.preferredSupportedLocales != null && config.preferredSupportedLocales!.isNotEmpty) {
-      preferredLocales = config.preferredSupportedLocales!.map((locale) => LocaleInfo.fromString(locale)).toList();
+    if (config.preferredSupportedLocales != null &&
+        config.preferredSupportedLocales!.isNotEmpty) {
+      preferredLocales = config.preferredSupportedLocales!
+          .map((locale) => LocaleInfo.fromString(locale))
+          .toList();
     }
 
     try {
@@ -66,7 +70,8 @@ class JasprLocalizationBuilder implements Builder {
         nullableGetter: config.nullableGetter,
         useFormat: config.useFormat,
         requiredResourceAttributes: config.requiredResourceAttributes,
-        untranslatedMessagesFile: config.untranslatedMessagesFile ?? 'untranslated_messages.json',
+        untranslatedMessagesFile:
+            config.untranslatedMessagesFile ?? 'untranslated_messages.json',
         logger: logger,
       );
 
@@ -80,7 +85,9 @@ class JasprLocalizationBuilder implements Builder {
 
       await buildStep.writeAsString(outputId, generatedCode);
 
-      logger.printStatus('Jaspr localization files generated successfully to $outputPath');
+      logger.printStatus(
+        'Jaspr localization files generated successfully to $outputPath',
+      );
     } catch (e, stackTrace) {
       logger.printError('Failed to generate localization files: $e');
       logger.printError('Stack trace: $stackTrace');
@@ -94,7 +101,12 @@ Builder jasprLocalizationsBuilder(BuilderOptions options) {
   // Load configuration to determine output path
   final logger = ConsoleLogger();
   final fileSystem = LocalJasprFileSystem();
-  final config = L10nConfig.load('.', fileSystem, logger);
+  final config = L10nConfig.load(
+    '.',
+    fileSystem,
+    logger,
+    options: options.config,
+  );
 
   // Extract the output path relative to lib/
   // If config specifies 'lib/generated/l10n.dart', we need 'generated/l10n.dart'
@@ -109,5 +121,5 @@ Builder jasprLocalizationsBuilder(BuilderOptions options) {
 
   logger.printStatus('Build extensions configured: $buildExtensions');
 
-  return JasprLocalizationBuilder(buildExtensions);
+  return JasprLocalizationBuilder(buildExtensions, config);
 }

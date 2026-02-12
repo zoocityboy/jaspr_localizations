@@ -7,5 +7,9 @@ builders:
         - "generated/app_localizations.dart"
     auto_apply: all_packages
     build_to: source
-    runs_before: []
+    # Ensure localization generation runs before web compilation so generated
+    # localization files exist for imports during subsequent builds.
+    runs_before:
+      - "build_web_compilers|entrypoint"
+      - "build_web_compilers|ddc"
     applies_builders: []

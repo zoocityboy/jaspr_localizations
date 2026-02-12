@@ -9,7 +9,17 @@
     "description": "Der Titel der Anwendung, der im Header angezeigt wird",
     "context": "ui:header"
   },
-  
+
+  "welcome": "Willkommen",
+  "@welcome": {
+    "description": "Welcome header on the home page",
+    "context": "ui:home:header"
+  },
+  "successCreation": "Sie haben erfolgreich eine neue Jaspr-Website mit jaspr_localizations erstellt.",
+  "@successCreation": {
+    "description": "Success message displayed on home page showing creation status",
+    "context": "ui:home:content"
+  },
   "welcomeMessage": "Willkommen bei {appName}!",
   "@welcomeMessage": {
     "description": "Willkommensnachricht für Benutzer beim Öffnen der Anwendung",
@@ -36,6 +46,16 @@
     }
   },
   
+  "languageSwitcher": "Sprachumschalter",
+  "@languageSwitcher": {
+    "description": "Header for the language selector section",
+    "context": "ui:settings"
+  },
+  "currentLabel": " (aktuell)",
+  "@currentLabel": {
+    "description": "Label indicating the currently selected option",
+    "context": "ui:status"
+  },
   "loginButton": "Anmelden",
   "@loginButton": {
     "description": "Text für die Anmelde-Schaltfläche",
@@ -61,7 +81,7 @@
     }
   },
   
-  "genderMessage": "{gender, select, male{Er mag Flutter} female{Sie mag Flutter} other{Sie mögen Flutter}}",
+  "genderMessage": "{gender, select, male{Er mag Jaspr} female{Sie mag Jaspr} other{Sie mögen Jaspr}}",
   "@genderMessage": {
     "description": "Geschlechtsspezifische Nachricht zur Demonstration des ICU-Select-Formats",
     "context": "example:icu",
@@ -163,6 +183,27 @@
         "format": "Hm",
         "example": "2023-10-15T14:30:00Z",
         "description": "Verbleibende Zeit"
+      }
+    }
+  },
+  "activityDetailsDateSameDayWithTime": "{date}: {startTime} to {endTime}",
+  "@activityDetailsDateSameDayWithTime": {
+    "description": "Label for activity details when the date is the same day and start time is different from end time",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "example": "27. April 2026",
+        "format": "yMMMMEEEEd"
+      },
+      "startTime": {
+        "type": "DateTime",
+        "example": "09:00",
+        "format": "jm"
+      },
+      "endTime": {
+        "type": "DateTime",
+        "example": "17:00",
+        "format": "jm"
       }
     }
   }

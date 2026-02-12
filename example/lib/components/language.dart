@@ -1,65 +1,25 @@
 // TODO: Fix dart:isolate issue with generated l10n
 // import 'package:example/generated/l10n.dart';
+import 'package:example/l10n/generated/app_l10n.dart';
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_localizations/jaspr_localizations.dart';
 
-@client
 class LanguageComponent extends StatelessComponent {
   const LanguageComponent({super.key});
 
-  /// Temporary localization helper until dart:isolate issue is resolved
-  String _getLocalizedText(String key, Locale locale) {
-    // Simple fallback translations
-    final translations = <String, Map<String, String>>{
-      'appTitle': {
-        'en': 'Jaspr Localization Example',
-        'es': 'Ejemplo de Localización Jaspr',
-        'fr': 'Exemple de Localisation Jaspr',
-        'de': 'Jaspr Lokalisierungsbeispiel',
-        'cs': 'Příklad lokalizace Jaspr',
-        'pl': 'Przykład lokalizacji Jaspr',
-        'sk': 'Príklad lokalizácie Jaspr',
-        'zh': 'Jaspr 本地化示例',
-      },
-      'loginButton': {
-        'en': 'Login',
-        'es': 'Iniciar sesión',
-        'fr': 'Connexion',
-        'de': 'Anmelden',
-        'cs': 'Přihlásit se',
-        'pl': 'Zaloguj się',
-        'sk': 'Prihlásiť sa',
-        'zh': '登录',
-      },
-      'logoutButton': {
-        'en': 'Logout',
-        'es': 'Cerrar sesión',
-        'fr': 'Déconnexion',
-        'de': 'Abmelden',
-        'cs': 'Odhlásit se',
-        'pl': 'Wyloguj się',
-        'sk': 'Odhlásiť sa',
-        'zh': '登出',
-      },
-    };
-
-    final langCode = locale.languageCode;
-    return translations[key]?[langCode] ?? translations[key]?['en'] ?? key;
-  }
-
   @override
   Component build(BuildContext context) {
-    if (!kIsWeb) return div([text('LanguageComponent is only available on web.')]);
-
+    final l10n = AppL10n.of(context)!;
     final provider = JasprLocalizationProvider.of(context);
     final currentLocale = provider.currentLocale;
 
     return div([
-      h1([text(_getLocalizedText('appTitle', currentLocale))]),
-      p([text('Current locale: ${currentLocale.toLanguageTag()}')]),
+      h2([Component.text(l10n.appTitle)]),
+      p([Component.text(l10n.currentLocale(currentLocale.toLanguageTag()))]),
 
       div(classes: 'mt-4', [
-        h2([text('Language Switcher')]),
+        h3([Component.text(l10n.languageSwitcher)]),
         div(classes: 'flex gap-2', [
           // Generate buttons dynamically for all supported locales
           ...provider.supportedLocales.map((locale) {
@@ -71,13 +31,14 @@ class LanguageComponent extends StatelessComponent {
               classes: isActive ? 'btn btn-primary' : 'btn btn-outline',
               onClick: () {
                 print('🌍 $displayName button clicked (${locale.toLanguageTag()})');
-                if (locale.countryCode != null) {
-                  JasprLocalizationProvider.setLanguage(context, languageCode, locale.countryCode);
-                } else {
-                  JasprLocalizationProvider.setLanguage(context, languageCode);
-                }
+                JasprLocalizationProvider.setLanguage(
+                  context,
+                  languageCode,
+                  locale.countryCode,
+                );
               },
-              [text(displayName)],
+
+              [Component.text(displayName + (isActive ? l10n.currentLabel : ''))],
             );
           }),
         ]),
@@ -85,28 +46,44 @@ class LanguageComponent extends StatelessComponent {
 
       div(classes: 'mt-4', [
         div(classes: 'flex gap-2', [
-          button(classes: 'btn', [text(_getLocalizedText('loginButton', currentLocale))]),
-          button(classes: 'btn', [text(_getLocalizedText('logoutButton', currentLocale))]),
+          button(classes: 'btn', [Component.text(l10n.loginButton)]),
+          button(classes: 'btn', [Component.text(l10n.logoutButton)]),
         ]),
       ]),
 
       div(classes: 'mt-4', [
-        h2([text('Supported Locales:')]),
+        h2([Component.text('Supported Locales:')]),
         ul([
           ...provider.supportedLocales.map(
             (locale) => li(classes: locale == currentLocale ? 'font-bold text-primary' : '', [
-              text('${locale.toLanguageTag()} ${locale == currentLocale ? '(current)' : ''}'),
+              Component.text('${locale.toLanguageTag()} ${locale == currentLocale ? '(current)' : ''}'),
             ]),
           ),
         ]),
       ]),
       div(classes: 'mt-4', [
-        h2([text('Basic Translations:')]),
+        h2([Component.text('Basic Translations:')]),
         div(classes: 'space-y-2', [
-          p([text('Title: ${_getLocalizedText('appTitle', currentLocale)}')]),
-          p([text('Login: ${_getLocalizedText('loginButton', currentLocale)}')]),
-          p([text('Logout: ${_getLocalizedText('logoutButton', currentLocale)}')]),
-          p([text('Locale: ${currentLocale.toLanguageTag()}')]),
+          p([Component.text('Title: ${l10n.appTitle}')]),
+          p([Component.text('Login: ${l10n.loginButton}')]),
+          p([Component.text('Logout: ${l10n.logoutButton}')]),
+          p([Component.text('Locale: ${currentLocale.toLanguageTag()}')]),
+          // Horizontal row: use `space-x-2` for horizontal spacing between children
+          div(classes: 'space-x-2 flex flex-row', [
+            p([Component.text('Male: ${l10n.genderMessage('male')}')]),
+            p([Component.text('Female: ${l10n.genderMessage('female')}')]),
+          ]),
+          p([Component.text('Other: ${l10n.lastUpdated(DateTime.now())}')]),
+          p([
+            Component.text(
+              'Activity details: ${l10n.activityDetailsDateSameDayWithTime(DateTime.now(), DateTime.now().subtract(Duration(hours: -2)), DateTime.now().subtract(Duration(hours: 3)))}',
+            ),
+          ]),
+          p([
+            Component.text(
+              'Plurals: ${l10n.itemCount(0)} | ${l10n.itemCount(2)} | ${l10n.itemCount(5)}',
+            ),
+          ]),
         ]),
       ]),
     ]);
@@ -137,6 +114,14 @@ class LanguageComponent extends StatelessComponent {
     ]),
     css('.space-y-2 > * + *', [
       css('&').styles(margin: Margin.only(top: 0.5.rem)),
+    ]),
+    // Horizontal spacing utility similar to Tailwind's `space-x-*`.
+    css('.space-x-2 > * + *', [
+      css('&').styles(margin: Margin.only(left: 0.5.rem)),
+    ]),
+    // Utility to explicitly set flex direction to row when needed.
+    css('.flex-row', [
+      css('&').styles(flexDirection: FlexDirection.row),
     ]),
     css('.font-bold', [
       css('&').styles(fontWeight: FontWeight.bold),

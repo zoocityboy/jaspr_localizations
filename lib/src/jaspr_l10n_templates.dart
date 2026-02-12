@@ -15,8 +15,8 @@ import '@{importFile}';
 // ignore_for_file: type=lint
 
 /// The translations for @{locale} (`@{locale}`).
-class @{class} extends @{baseClass} {
-  @{class}([String locale = '@{locale}']) : super(locale);
+class _@{class} extends @{baseClass} {
+  _@{class}([String locale = '@{locale}']) : super(locale);
 
 @{classMethods}
 }
@@ -106,7 +106,7 @@ const supportedLocalesTemplate = '''
 
 const baseClassMethodTemplate = '''
 
-  /// No description provided for @{methodName}.
+  /// @{comment}
   ///
   /// In @{localeVar}, this message translates to:
   /// **'@{message}'**
@@ -115,7 +115,7 @@ const baseClassMethodTemplate = '''
 
 const baseClassGetterTemplate = '''
 
-  /// No description provided for @{methodName}.
+  /// @{comment}
   ///
   /// In @{localeVar}, this message translates to:
   /// **'@{message}'**
@@ -190,6 +190,7 @@ const jasprBaseClassTemplate = '''
 // ignore_for_file: type=lint
 
 import 'package:intl/intl.dart' as intl;
+import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_localizations/jaspr_localizations.dart';
 
 abstract class @{class} {
@@ -198,11 +199,13 @@ abstract class @{class} {
   final String localeName;
 
   /// Retrieve the [@{class}] instance from the context.
-  static @{class}? of(dynamic context) {
+  static @{class}? of(BuildContext context) {
     // For Jaspr, we can't use Localizations.of() like Flutter
     // This would need to be implemented using Jaspr's provider system
     // For now, return null and let consumers handle this
-    return null;
+    final provider = JasprLocalizationProvider.of(context);
+    final currentLocale = provider.currentLocale;
+    return @{class}.from(currentLocale.languageCode);
   }
 
   /// The delegate for this localizations class.
@@ -224,7 +227,7 @@ abstract class @{class} {
     switch (locale) {
 @{fromSwitchCases}
       default:
-        return @{defaultClass}();
+        return _@{defaultClass}();
     }
   }
 

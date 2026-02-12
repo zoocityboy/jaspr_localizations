@@ -1,6 +1,6 @@
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_localizations/jaspr_localizations.dart';
-import 'package:jaspr_localizations/src/base/locale.dart';
 
 /// Example demonstrating how to get the current language from browser or platform
 ///
@@ -8,7 +8,6 @@ import 'package:jaspr_localizations/src/base/locale.dart';
 /// functions which automatically detect whether the code is running on the client
 /// (browser) or server and get the appropriate language preference.
 
-@client
 class LanguageDetectionExample extends StatelessComponent {
   const LanguageDetectionExample({super.key});
 
@@ -24,44 +23,44 @@ class LanguageDetectionExample extends StatelessComponent {
     final manualLocale = languageCodeToLocale('en-US');
 
     return div([
-      h2([text('Language Detection Example')]),
+      h2([Component.text('Language Detection Example')]),
 
       p([
-        text('Detected language code: '),
-        strong([text(languageCode)]),
+        Component.text('Detected language code: '),
+        strong([Component.text(languageCode)]),
       ]),
 
       p([
-        text('Detected locale: '),
-        strong([text(locale.toLanguageTag())]),
+        Component.text('Detected locale: '),
+        strong([Component.text(locale.toLanguageTag())]),
       ]),
 
       p([
-        text('Manual locale conversion (en-US): '),
-        strong([text(manualLocale.toLanguageTag())]),
+        Component.text('Manual locale conversion (en-US): '),
+        strong([Component.text(manualLocale.toLanguageTag())]),
       ]),
 
       hr(),
 
-      h3([text('How it works:')]),
+      h3([Component.text('How it works:')]),
       ul([
         li([
-          text('On the client (browser): Uses '),
-          code([text('navigator.language')]),
-          text(' or '),
-          code([text('navigator.languages[0]')]),
+          Component.text('On the client (browser): Uses '),
+          code([Component.text('navigator.language')]),
+          Component.text(' or '),
+          code([Component.text('navigator.languages[0]')]),
         ]),
         li([
-          text('On the server: Uses '),
-          code([text('Intl.getCurrentLocale()')]),
-          text(' from the platform'),
+          Component.text('On the server: Uses '),
+          code([Component.text('Intl.getCurrentLocale()')]),
+          Component.text(' from the platform'),
         ]),
       ]),
 
-      h3([text('Usage in your app:')]),
+      h3([Component.text('Usage in your app:')]),
       pre([
         code([
-          text('''
+          Component.text('''
 // Get current language code as string
 final langCode = getCurrentLanguageCode();
 // Returns: 'en-US', 'es', 'fr-FR', etc.
@@ -106,7 +105,7 @@ class AutoLanguageApp extends StatelessComponent {
       initialLocale: initialLocale,
       builder: (context, locale) {
         return div([
-          text('App is using locale: ${locale.toLanguageTag()}'),
+          Component.text('App is using locale: ${locale.toLanguageTag()}'),
           const LanguageDetectionExample(),
         ]);
       },

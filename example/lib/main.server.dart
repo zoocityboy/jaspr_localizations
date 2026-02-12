@@ -1,21 +1,23 @@
-// The entrypoint for the **server** environment.
-//
-// The [main] method will only be executed on the server during pre-rendering.
-// To run code on the client, use the @client annotation.
+/// The entrypoint for the **server** environment.
+///
+/// The [main] method will only be executed on the server during pre-rendering.
+/// To run code on the client, check the `main.client.dart` file.
+library;
 
-// Server-specific jaspr import.
+import 'package:jaspr/dom.dart';
+// Server-specific Jaspr import.
 import 'package:jaspr/server.dart';
 
 // Imports the [App] component.
 import 'app.dart';
 
 // This file is generated automatically by Jaspr, do not remove or edit.
-import 'jaspr_options.dart';
+import 'main.server.options.dart';
 
 void main() {
   // Initializes the server environment with the generated default options.
   Jaspr.initializeApp(
-    options: defaultJasprOptions,
+    options: defaultServerOptions,
   );
 
   // Starts the app.
@@ -24,7 +26,8 @@ void main() {
   // with the provided parameters and components.
   runApp(
     Document(
-      title: 'example',
+      title: 'x',
+      lang: 'en',
       styles: [
         // Special import rule to include to another css file.
         css.import('https://fonts.googleapis.com/css?family=Roboto'),
@@ -33,12 +36,12 @@ void main() {
         css('html, body').styles(
           width: 100.percent,
           minHeight: 100.vh,
-          padding: Padding.zero,
-          margin: Margin.zero,
-          fontFamily: const FontFamily.list([FontFamily('Roboto'), FontFamilies.sansSerif]),
+          padding: .zero,
+          margin: .zero,
+          fontFamily: const .list([FontFamily('Roboto'), FontFamilies.sansSerif]),
         ),
         css('h1').styles(
-          margin: Margin.unset,
+          margin: .unset,
           fontSize: 4.rem,
         ),
       ],

@@ -1,3 +1,10 @@
+## 1.0.0-beta.4
+- Feature: DateTime placeholder formatting in generator
+- Build: localization builder ordering to avoid import failures
+- Fix: SSR Intl initialization (avoids LocaleDataException)
+- UX: small layout/style adjustments; “Flutter” -> “Jaspr” wording in examples
+- Example: DateTime ARB entries and regenerated example localization
+
 ## 1.0.0
 
 - Initial version with InheritedComponent-based LocaleProvider

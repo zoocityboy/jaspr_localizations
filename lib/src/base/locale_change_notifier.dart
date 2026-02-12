@@ -1,23 +1,23 @@
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_localizations/src/base/locale.dart';
 
-/// A controller for managing locale changes
+/// Manages the current locale and notifies listeners of changes.
 class LocaleChangeNotifier extends ChangeNotifier {
+  /// Creates a notifier with an [initialLocale] and [supportedLocales].
   LocaleChangeNotifier({
     required Locale initialLocale,
     required this.supportedLocales,
   }) : _currentLocale = initialLocale;
 
-  /// The current locale
   Locale _currentLocale;
 
-  /// The list of supported locales
+  /// The supported locales.
   final List<Locale> supportedLocales;
 
-  /// Gets the current locale
+  /// The current locale.
   Locale get currentLocale => _currentLocale;
 
-  /// Changes the current locale and notifies listeners
+  /// Updates the locale and notifies listeners.
   void setLocale(Locale newLocale) {
     print(
       'LocaleController.setLocale: Attempting to change from ${_currentLocale.toLanguageTag()} to ${newLocale.toLanguageTag()}',
@@ -49,13 +49,13 @@ class LocaleChangeNotifier extends ChangeNotifier {
     }
   }
 
-  /// Changes the locale by language code (e.g., 'en', 'es', 'fr')
+  /// Updates the locale by language code.
   void setLanguage(String languageCode, [String? countryCode]) {
     final locale = Locale(languageCode, countryCode);
     setLocale(locale);
   }
 
-  /// Checks if a locale is supported
+  /// Checks if a locale is supported.
   bool isSupported(Locale locale) {
     return supportedLocales.contains(locale);
   }

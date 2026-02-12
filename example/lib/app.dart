@@ -1,4 +1,5 @@
-import 'package:example/generated/l10n.dart';
+import 'package:example/l10n/generated/app_l10n.dart';
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_localizations/jaspr_localizations.dart';
 import 'package:jaspr_router/jaspr_router.dart';
@@ -10,38 +11,28 @@ import 'pages/home.dart';
 // By using multi-page routing, this component will only be built on the server during pre-rendering and
 // **not** executed on the client. Instead only the nested [Home] and [About] components will be mounted on the client.
 @client
-class App extends StatefulComponent {
+class App extends StatelessComponent {
   const App({super.key});
-
-  @override
-  State createState() => AppState();
-}
-
-class AppState extends State<App> {
-  late Locale currentLocale;
-  late List<Locale> supportedLocales;
-
-  @override
-  void initState() {
-    supportedLocales = L10nDelegate.supportedLocales;
-    currentLocale = supportedLocales.first;
-    super.initState();
-  }
 
   @override
   Component build(BuildContext context) {
     // Use LocalizationApp for automatic locale switching and rebuilding
     return JasprLocalizations(
-      supportedLocales: supportedLocales,
-      initialLocale: currentLocale,
-      delegates: const [L10nDelegate()],
-      builder: (context, locale) => div(classes: 'main', [
-        Router(
-          routes: [
-            Route(path: '/', title: 'Home', builder: (context, state) => const Home()),
-          ],
-        ),
-      ]),
+      supportedLocales: AppL10nDelegate.supportedLocales,
+      delegates: [AppL10n.delegate],
+      builder: (context, locale) {
+        return div(classes: 'main', [
+          Router(
+            routes: [
+              Route(
+                path: '/',
+                title: 'Home',
+                builder: (context, state) => const Home(),
+              ),
+            ],
+          ),
+        ]);
+      },
     );
   }
 
@@ -56,14 +47,15 @@ class AppState extends State<App> {
       css('&').styles(
         display: Display.flex,
         height: 100.vh,
+        padding: Spacing.all(16.px),
         flexDirection: FlexDirection.column,
         flexWrap: FlexWrap.wrap,
       ),
       css('section').styles(
         display: Display.flex,
         flexDirection: FlexDirection.column,
-        justifyContent: JustifyContent.center,
-        alignItems: AlignItems.center,
+        justifyContent: JustifyContent.start,
+        alignItems: AlignItems.start,
         flex: Flex(grow: 1),
       ),
     ]),
