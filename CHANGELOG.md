@@ -1,4 +1,4 @@
-## 1.0.0-beta.4
+## 1.0.0+beta.4
 - Feature: DateTime placeholder formatting in generator
 - Build: localization builder ordering to avoid import failures
 - Fix: SSR Intl initialization (avoids LocaleDataException)
