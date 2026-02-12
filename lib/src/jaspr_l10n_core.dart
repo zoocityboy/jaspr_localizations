@@ -35,7 +35,7 @@ class JasprLocalizationProvider extends InheritedComponent {
 
   /// The current fixed locale, or null if using [controller].
   final Locale? locale;
-  
+
   // Snapshot of the locale at the time of build to detect changes
   final Locale? _currentLocaleSnapshot;
 
@@ -147,7 +147,7 @@ class JasprLocalizationProvider extends InheritedComponent {
         delegates != oldComponent.delegates ||
         _supportedLocales != oldComponent._supportedLocales ||
         controller != oldComponent.controller;
-    
+
     if (shouldNotify) {
       print('JasprLocalizationProvider: updateShouldNotify returned true');
       print(

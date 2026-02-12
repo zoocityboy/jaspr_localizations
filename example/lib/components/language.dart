@@ -37,7 +37,7 @@ class LanguageComponent extends StatelessComponent {
                   locale.countryCode,
                 );
               },
-              
+
               [Component.text(displayName + (isActive ? l10n.currentLabel : ''))],
             );
           }),

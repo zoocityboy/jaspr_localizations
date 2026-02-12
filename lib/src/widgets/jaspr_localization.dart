@@ -78,7 +78,6 @@ class JasprLocalizations extends StatefulComponent {
 class _JasprLocalizationsState extends State<JasprLocalizations> {
   /// The controller that manages the current locale state.
   late LocaleChangeNotifier _controller;
-  var _localeDataInitialized = false;
 
   /// Called when the locale changes in the controller.
   ///
@@ -105,19 +104,10 @@ class _JasprLocalizationsState extends State<JasprLocalizations> {
           component.supportedLocales.map((l) => l.toLanguageTag()),
         )
         .then((_) {
-          _localeDataInitialized = true;
-          if (kIsWeb) {
-            setState(() {});
-          }
-          
+          if (kIsWeb) setState(() {});
         })
         .catchError((e) {
-          _localeDataInitialized = true;
-          if (kIsWeb) {
-            
-            setState(() {});
-          
-          }
+          if (kIsWeb) setState(() {});
         });
     // Listen for locale changes
     _controller.addListener(_onLocaleChanged);

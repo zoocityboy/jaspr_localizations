@@ -57,13 +57,12 @@ class HomeState extends State<Home> {
         div(classes: 'row', [
           const LanguageComponent(),
 
-        
           JasprLocalizations.withLocale(
-          locale: AppL10nDelegate.supportedLocales.last,
+            locale: AppL10nDelegate.supportedLocales.last,
             child: LanguageComponent(),
           ),
         ]),
-        
+
         div(styles: Styles(height: 50.px), []),
       ],
     );
